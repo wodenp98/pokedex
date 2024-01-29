@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { css } from "../styled-system/css";
+import { Button } from "@/components/button";
 
 async function getPokemons() {
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=30");
@@ -12,17 +11,7 @@ export default async function Home() {
 
   return (
     <main>
-      <div
-        className={css({
-          fontSize: "2xl",
-          fontWeight: "bold",
-          bgGradient: "to-r",
-          gradientFrom: "red.200",
-          gradientTo: "blue.200",
-        })}
-      >
-        Hello 🐼!
-      </div>
+      <Button>Test</Button>
       {pokemons.map((pokemon: any) => (
         <div key={pokemon.name}>
           <h1>{pokemon.name}</h1>
