@@ -1,4 +1,4 @@
-import { Button } from "@/components/button";
+import { Button } from "~/components/ui/button";
 
 async function getPokemons() {
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=30");
