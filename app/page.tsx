@@ -5,18 +5,25 @@ async function getPokemons() {
   const data = await res.json();
   return data.results;
 }
+async function getOnePokemon(name: string) {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+  const data = await res.json();
+  return data;
+}
 
 export default async function Home() {
   const pokemons = await getPokemons();
+  const pokemon = await getOnePokemon("bulbasaur");
+  console.log(pokemon.sprites.other["official-artwork"].front_default);
 
   return (
     <main>
       <Button>Test</Button>
-      {pokemons.map((pokemon: any) => (
+      {/* {pokemons.map((pokemon: any) => (
         <div key={pokemon.name}>
           <h1>{pokemon.name}</h1>
         </div>
-      ))}
+      ))} */}
     </main>
   );
 }
