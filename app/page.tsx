@@ -19,7 +19,7 @@ export default async function Home() {
 
   return (
     <main>
-      <Button>oui</Button>
+      <Button>Test</Button>
       <div className={css({ mt: "4", fontSize: "xl", fontWeight: "semibold" })}>
         John Doe
       </div>

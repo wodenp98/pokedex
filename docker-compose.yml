@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  pokedex:
+    container_name: pokedex
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Set environment variables directly in the docker-compose file
+    environment:
+      - WATCHPACK_POLLING=true
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - my_network
+
+  # Add more containers below (nginx, postgres, etc.)
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  my_network:
+    external: true
