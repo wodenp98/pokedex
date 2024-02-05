@@ -1,3 +1,4 @@
+import { css } from "../styled-system/css";
 import { Button } from "~/components/ui/button";
 
 async function getPokemons() {
@@ -18,7 +19,10 @@ export default async function Home() {
 
   return (
     <main>
-      <Button>Test</Button>
+      <Button>oui</Button>
+      <div className={css({ mt: "4", fontSize: "xl", fontWeight: "semibold" })}>
+        John Doe
+      </div>
       {/* {pokemons.map((pokemon: any) => (
         <div key={pokemon.name}>
           <h1>{pokemon.name}</h1>

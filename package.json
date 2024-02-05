@@ -19,7 +19,7 @@
     "react-dom": "^18"
   },
   "devDependencies": {
-    "@pandacss/dev": "^0.28.0",
+    "@pandacss/dev": "^0.29.1",
     "@park-ui/panda-preset": "^0.31.0",
     "@types/node": "^20",
     "@types/react": "^18",
