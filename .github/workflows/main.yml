@@ -12,7 +12,10 @@ jobs:
     steps:
       - name: Check out repository code 🛎️
         uses: actions/checkout@v4
-
+        
+      - name: Set Environment Variables
+        run: echo "TAG=latest" >> $GITHUB_ENV
+        
       - name: Set up Docker Buildx 🚀
         uses: docker/setup-buildx-action@v3
 
@@ -28,5 +31,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: latest # Specify your desired tag here, e.g., "latest" or a version number
+          tags: ${{ env.TAG }}
           labels: ${{ steps.meta.outputs.labels }}
+
