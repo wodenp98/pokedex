@@ -19,8 +19,8 @@ jobs:
       - name: Login to Docker Hub 🚢
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME}}
-          password: ${{ secrets.DOCKER_PASSWORD}}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push 🏗️
         uses: docker/build-push-action@v2
@@ -28,5 +28,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: latest # Specify your desired tag here, e.g., "latest" or a version number
           labels: ${{ steps.meta.outputs.labels }}
