@@ -15,7 +15,8 @@ async function getOnePokemon(name: string) {
 export default async function Home() {
   const pokemons = await getPokemons();
   const pokemon = await getOnePokemon("bulbasaur");
-  console.log(pokemon.sprites.other["official-artwork"].front_default);
+  console.log("pokemons", pokemons);
+  // console.log(pokemon.sprites.other["official-artwork"].front_default);
 
   return (
     <main>
