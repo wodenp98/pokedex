@@ -1,6 +1,8 @@
 import * as Card from "~/components/ui/card";
 import Image from "next/image";
 import { center, grid } from "~/styled-system/patterns";
+import { Button } from "~/components/ui/button";
+import Link from "next/link";
 
 async function getPokemons() {
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=30");
@@ -24,6 +26,8 @@ async function getPokemons() {
     }
   );
 
+  console.log("pokemons", pokemonDetails[0].details);
+
   return pokemonsWithDetails;
 }
 
@@ -40,27 +44,29 @@ export default async function Home() {
               key={pokemon.name}
               className={center({ h: "full" })}
             >
-              <Card.Body>
-                <Image
-                  src={
-                    pokemon.details.sprites.other?.["official-artwork"]
-                      ?.front_default ?? pokemon.details.sprites.front_default
-                  }
-                  alt={pokemon.name}
-                  width={200}
-                  height={200}
-                />
-                <h1
-                  className={center({
-                    my: "2",
-                    fontWeight: "bold",
-                    textStyle: "md",
-                    textTransform: "uppercase",
-                  })}
-                >
-                  {pokemon.name}
-                </h1>
-              </Card.Body>
+              <Link href={`/pokemon/${pokemon.name}`}>
+                <Card.Body>
+                  <Image
+                    src={
+                      pokemon.details.sprites.other?.["official-artwork"]
+                        ?.front_default ?? pokemon.details.sprites.front_default
+                    }
+                    alt={pokemon.name}
+                    width={200}
+                    height={200}
+                  />
+                  <h1
+                    className={center({
+                      my: "2",
+                      fontWeight: "bold",
+                      textStyle: "md",
+                      textTransform: "uppercase",
+                    })}
+                  >
+                    {pokemon.name}
+                  </h1>
+                </Card.Body>
+              </Link>
             </Card.Root>
           ))}
         </div>
