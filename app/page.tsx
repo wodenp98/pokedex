@@ -26,8 +26,6 @@ async function getPokemons() {
     }
   );
 
-  console.log("pokemons", pokemonDetails[0].details);
-
   return pokemonsWithDetails;
 }
 
