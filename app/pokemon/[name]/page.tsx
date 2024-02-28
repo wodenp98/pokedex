@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 interface Params {
   params: {
@@ -11,7 +12,6 @@ async function getPokemonData(name: string) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
   const data = await res.json();
 
-  console.log("👍", data);
   return data;
 }
 
@@ -31,9 +31,11 @@ async function getEvolutionOfPokemon(url: string) {
 
   while (currentStage) {
     const pokemon = await getPokemonData(currentStage.species.name);
+
     evolutionChain.push({
       name: pokemon.name,
       image: pokemon.sprites.other["official-artwork"].front_default,
+      evolves: currentStage.evolves_to[0]?.evolution_details[0],
     });
     currentStage = currentStage.evolves_to[0];
   }
@@ -48,7 +50,23 @@ export default async function Page({ params: { name } }: Params) {
     informationsPokemon.evolution_chain.url
   );
 
-  console.log("👍", evolvePokemon);
-
-  return <div>{name}</div>;
+  return (
+    <div>
+      <p>{name}</p>
+      <div>
+        {evolvePokemon.map((pokemon) => (
+          <div key={pokemon.name}>
+            <p>{pokemon.name}</p>
+            <Image
+              src={pokemon.image}
+              alt={pokemon.name}
+              width={200}
+              height={200}
+            />
+            <p>{pokemon.evolves?.min_level ?? ""}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

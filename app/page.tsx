@@ -3,6 +3,7 @@ import Image from "next/image";
 import { center, grid } from "~/styled-system/patterns";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
+import { css } from "~/styled-system/css";
 
 async function getPokemons() {
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=30");
@@ -68,6 +69,9 @@ export default async function Home() {
             </Card.Root>
           ))}
         </div>
+      </div>
+      <div className={center({ my: "8" })}>
+        <Button className={css({ bgColor: "red.9" })}>Load more</Button>
       </div>
     </main>
   );
