@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { css } from "~/styled-system/css";
 
-export default function Navbar() {
+export const Navbar = () => {
   return (
     <div
       className={css({
@@ -29,4 +29,4 @@ export default function Navbar() {
       </p>
     </div>
   );
-}
+};

@@ -1,6 +1,7 @@
-import Navbar from "~/components/Navbar/Navbar";
+import { Navbar } from "~/components/Layout/Navbar";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { Footer } from "~/components/Layout/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Navbar />
-        {children}
+        <div>{children}</div>
+        <Footer />
       </body>
     </html>
   );
