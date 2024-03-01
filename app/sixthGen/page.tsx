@@ -1,18 +1,14 @@
 import * as Card from "~/components/ui/card";
 import Image from "next/image";
 import { center, grid } from "~/styled-system/patterns";
-import { Button } from "~/components/ui/button";
 import Link from "next/link";
-import { css } from "~/styled-system/css";
-
-// display first gen and second and third with title each time
-// un bouton par génération qui change en gros de page, cela facilite dans tout les cas la recherche
 
 async function getPokemons() {
-  const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
+  const res = await fetch(
+    "https://pokeapi.co/api/v2/pokemon?limit=72&offset=649"
+  );
   const data = await res.json();
 
-  // Récupérer les détails de chaque Pokémon
   const pokemonDetails = await Promise.all(
     data.results.map(async (pokemon: any) => {
       const pokemonRes = await fetch(pokemon.url);
@@ -20,7 +16,6 @@ async function getPokemons() {
     })
   );
 
-  // Ajouter les détails aux objets Pokémon
   const pokemonsWithDetails = data.results.map(
     (pokemon: any, index: number) => {
       return {
