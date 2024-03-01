@@ -5,6 +5,9 @@ import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { css } from "~/styled-system/css";
 
+// display first gen and second and third with title each time
+// un bouton par génération qui change en gros de page, cela facilite dans tout les cas la recherche
+
 async function getPokemons() {
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
   const data = await res.json();
@@ -64,14 +67,21 @@ export default async function Home() {
                   >
                     {pokemon.name}
                   </h1>
+                  <div>
+                    {pokemon.details.types.map((type: any) => (
+                      <div
+                        key={type.type.name}
+                        className={center({ bg: type.type.name, p: "1" })}
+                      >
+                        {type.type.name}
+                      </div>
+                    ))}
+                  </div>
                 </Card.Body>
               </Link>
             </Card.Root>
           ))}
         </div>
-      </div>
-      <div className={center({ my: "8" })}>
-        <Button className={css({ bgColor: "red.9" })}>Load more</Button>
       </div>
     </main>
   );
