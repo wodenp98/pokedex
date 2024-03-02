@@ -2,9 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import React from "react";
-import { Button } from "../ui/button";
 import Link from "next/link";
-import { center } from "~/styled-system/patterns";
 
 export const LayoutGeneration = ({
   children,
@@ -15,7 +13,7 @@ export const LayoutGeneration = ({
 
   return (
     <main>
-      <div className={center({ my: "4", display: "flex", gap: "4" })}>
+      {/* <div className={center({ my: "4", display: "flex", gap: "4" })}>
         <Link href="/">
           <Button
             {...(pathname === "/"
@@ -97,7 +95,7 @@ export const LayoutGeneration = ({
             9<sup>th</sup>gen.
           </Button>
         </Link>
-      </div>
+      </div> */}
 
       <section>{children}</section>
     </main>

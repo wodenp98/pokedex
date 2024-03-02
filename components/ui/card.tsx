@@ -1,23 +1,79 @@
-'use client'
+import * as React from "react"
 
-import { ark } from '@ark-ui/react/factory'
-import type { ComponentProps } from 'react'
-import { styled } from 'styled-system/jsx'
-import { card } from 'styled-system/recipes'
-import { createStyleContext } from '~/lib/create-style-context'
+import { cn } from "/lib/utils"
 
-const { withProvider, withContext } = createStyleContext(card)
+const Card = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      className
+    )}
+    {...props}
+  />
+))
+Card.displayName = "Card"
 
-export const Root = withProvider(styled(ark.div), 'root')
-export const Body = withContext(styled(ark.div), 'body')
-export const Description = withContext(styled(ark.div), 'description')
-export const Footer = withContext(styled(ark.div), 'footer')
-export const Header = withContext(styled(ark.div), 'header')
-export const Title = withContext(styled(ark.h3), 'title')
+const CardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    {...props}
+  />
+))
+CardHeader.displayName = "CardHeader"
 
-export interface RootProps extends ComponentProps<typeof Root> {}
-export interface BodyProps extends ComponentProps<typeof Body> {}
-export interface DescriptionProps extends ComponentProps<typeof Description> {}
-export interface FooterProps extends ComponentProps<typeof Footer> {}
-export interface HeaderProps extends ComponentProps<typeof Header> {}
-export interface TitleProps extends ComponentProps<typeof Title> {}
+const CardTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={cn(
+      "text-2xl font-semibold leading-none tracking-tight",
+      className
+    )}
+    {...props}
+  />
+))
+CardTitle.displayName = "CardTitle"
+
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+))
+CardDescription.displayName = "CardDescription"
+
+const CardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+))
+CardContent.displayName = "CardContent"
+
+const CardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center p-6 pt-0", className)}
+    {...props}
+  />
+))
+CardFooter.displayName = "CardFooter"
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

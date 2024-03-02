@@ -1,12 +1,6 @@
-import * as Card from "~/components/ui/card";
 import Image from "next/image";
-import { center, grid } from "~/styled-system/patterns";
-import { Button } from "~/components/ui/button";
 import Link from "next/link";
-import { css } from "~/styled-system/css";
-
-// display first gen and second and third with title each time
-// un bouton par génération qui change en gros de page, cela facilite dans tout les cas la recherche
+import { TypePokemon } from "~/components/TypePokemon/TypePokemon";
 
 async function getPokemons() {
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
@@ -37,50 +31,53 @@ export default async function Home() {
   const pokemons = await getPokemons();
 
   return (
-    <div className={center({ h: "full", my: "4" })}>
-      <div className={grid({ gap: 4, columns: 3 })}>
-        {pokemons.map((pokemon: any) => (
-          <Card.Root
-            width="sm"
-            key={pokemon.name}
-            className={center({ h: "full" })}
-          >
-            <Link href={`/pokemon/${pokemon.name}`}>
-              <Card.Body>
-                <Image
-                  src={
-                    pokemon.details.sprites.other?.["official-artwork"]
-                      ?.front_default ?? pokemon.details.sprites.front_default
-                  }
-                  alt={pokemon.name}
-                  width={200}
-                  height={200}
-                />
-                <h1
-                  className={center({
-                    my: "2",
-                    fontWeight: "bold",
-                    textStyle: "md",
-                    textTransform: "uppercase",
-                  })}
-                >
-                  {pokemon.name}
-                </h1>
-                <div>
-                  {pokemon.details.types.map((type: any) => (
-                    <div
-                      key={type.type.name}
-                      className={center({ bg: type.type.name, p: "1" })}
-                    >
-                      {type.type.name}
-                    </div>
-                  ))}
-                </div>
-              </Card.Body>
-            </Link>
-          </Card.Root>
-        ))}
-      </div>
-    </div>
+    // <div className={center({ h: "full", my: "4" })}>
+    //   <div className={grid({ gap: 4, columns: 3 })}>
+    //     {pokemons.map((pokemon: any) => (
+    //       <Card.Root
+    //         width="sm"
+    //         key={pokemon.name}
+    //         className={center({ h: "full" })}
+    //       >
+    //         <Link href={`/pokemon/${pokemon.name}`}>
+    //           <Card.Body>
+    //             <Image
+    //               src={
+    //                 pokemon.details.sprites.other?.["official-artwork"]
+    //                   ?.front_default ?? pokemon.details.sprites.front_default
+    //               }
+    //               alt={pokemon.name}
+    //               width={200}
+    //               height={200}
+    //             />
+    //             <h1
+    //               className={center({
+    //                 my: "2",
+    //                 fontWeight: "bold",
+    //                 textStyle: "md",
+    //                 textTransform: "uppercase",
+    //               })}
+    //             >
+    //               {pokemon.name}
+    //             </h1>
+    //             <div>
+    //               {pokemon.details.types.map((type: any) => (
+    //                 <div
+    //                   key={type.type.name}
+    //                   className={center({
+    //                     p: "1",
+    //                   })}
+    //                 >
+    //                   <TypePokemon type={type.type.name} />
+    //                 </div>
+    //               ))}
+    //             </div>
+    //           </Card.Body>
+    //         </Link>
+    //       </Card.Root>
+    //     ))}
+    //   </div>
+    // </div>
+    <div></div>
   );
 }
