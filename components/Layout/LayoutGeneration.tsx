@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import React from "react";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 export const LayoutGeneration = ({
   children,
@@ -13,89 +14,53 @@ export const LayoutGeneration = ({
 
   return (
     <main>
-      {/* <div className={center({ my: "4", display: "flex", gap: "4" })}>
+      <div className="flex items-center justify-center gap-2 my-4">
         <Link href="/">
-          <Button
-            {...(pathname === "/"
-              ? { variant: "solid" }
-              : { variant: "outline" })}
-          >
-            1<sup>st</sup>gen.
+          <Button variant={pathname === "/" ? "default" : "outline"}>
+            I gen.
           </Button>
         </Link>
         <Link href="/secondGen">
-          <Button
-            {...(pathname === "/secondGen"
-              ? { variant: "solid" }
-              : { variant: "outline" })}
-          >
-            2<sup>nd</sup>gen.
+          <Button variant={pathname === "/secondGen" ? "default" : "outline"}>
+            II gen.
           </Button>
         </Link>
         <Link href="/thirdGen">
-          <Button
-            {...(pathname === "/thirdGen"
-              ? { variant: "solid" }
-              : { variant: "outline" })}
-          >
-            3<sup>rd</sup>gen.
+          <Button variant={pathname === "/thirdGen" ? "default" : "outline"}>
+            III gen.
           </Button>
         </Link>
         <Link href="/fourthGen">
-          <Button
-            {...(pathname === "/fourthGen"
-              ? { variant: "solid" }
-              : { variant: "outline" })}
-          >
-            4<sup>th</sup>gen.
+          <Button variant={pathname === "/fourthGen" ? "default" : "outline"}>
+            IV gen.
           </Button>
         </Link>
         <Link href="/fifthGen">
-          <Button
-            {...(pathname === "/fifthGen"
-              ? { variant: "solid" }
-              : { variant: "outline" })}
-          >
-            5<sup>th</sup>gen.
+          <Button variant={pathname === "/fifthGen" ? "default" : "outline"}>
+            V gen.
           </Button>
         </Link>
         <Link href="/sixthGen">
-          <Button
-            {...(pathname === "/sixthGen"
-              ? { variant: "solid" }
-              : { variant: "outline" })}
-          >
-            6<sup>th</sup>gen.
+          <Button variant={pathname === "/sixthGen" ? "default" : "outline"}>
+            VI gen.
           </Button>
         </Link>
         <Link href="/seventhGen">
-          <Button
-            {...(pathname === "/seventhGen"
-              ? { variant: "solid" }
-              : { variant: "outline" })}
-          >
-            7<sup>th</sup>gen.
+          <Button variant={pathname === "/seventhGen" ? "default" : "outline"}>
+            VII gen.
           </Button>
         </Link>
         <Link href="/eighthGen">
-          <Button
-            {...(pathname === "/eighthGen"
-              ? { variant: "solid" }
-              : { variant: "outline" })}
-          >
-            8<sup>th</sup>gen.
+          <Button variant={pathname === "/eighthGen" ? "default" : "outline"}>
+            VIII gen.
           </Button>
         </Link>
         <Link href="/ninethGen">
-          <Button
-            {...(pathname === "/ninethGen"
-              ? { variant: "solid" }
-              : { variant: "outline" })}
-          >
-            9<sup>th</sup>gen.
+          <Button variant={pathname === "/ninethGen" ? "default" : "outline"}>
+            IX gen.
           </Button>
         </Link>
-      </div> */}
+      </div>
 
       <section>{children}</section>
     </main>

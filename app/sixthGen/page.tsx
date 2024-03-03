@@ -1,4 +1,4 @@
-import * as Card from "~/components/ui/card";
+import * as Card from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 
