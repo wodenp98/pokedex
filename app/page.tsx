@@ -93,11 +93,7 @@ export default async function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         {pokemons.map((pokemon: any) => (
-          <Card key={pokemon.name} className="w-80">
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription>Card Description</CardDescription>
-            </CardHeader>
+          <Card key={pokemon.name} className="w-80 flex justify-center">
             <CardContent>
               <Link href={`/pokemon/${pokemon.name}`}>
                 <div className="w-full rounded-lg overflow-hidden">
@@ -111,22 +107,18 @@ export default async function Home() {
                     height={200}
                   />
                 </div>
-                <h1 className="text-xl font-bold">{pokemon.name}</h1>
-                <div>
+                <h1 className="text-xl font-bold text-center">
+                  {pokemon.name}
+                </h1>
+                <div className="flex justify-center gap-2">
                   {pokemon.details.types.map((type: any) => (
-                    <div
-                      key={type.type.name}
-                      className="inline-block p-2 bg-gray-200 rounded-full"
-                    >
+                    <div key={type.type.name}>
                       <TypePokemon type={type.type.name} />
                     </div>
                   ))}
                 </div>
               </Link>
             </CardContent>
-            <CardFooter>
-              <p>Card Footer</p>
-            </CardFooter>
           </Card>
         ))}
       </div>
