@@ -1,5 +1,8 @@
 import React from "react";
 import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import Link from "next/link";
+import { TypePokemon } from "@/components/TypePokemon/TypePokemon";
 
 interface Params {
   params: {
@@ -23,21 +26,37 @@ async function getInformationsForPokemon(id: number) {
 }
 
 async function getEvolutionOfPokemon(url: string) {
-  const res = await fetch(`${url}`);
-  const data = await res.json(); // Create a function to fetch the pokemon details (including image)
-
+  const res = await fetch(url);
+  const data = await res.json();
   const evolutionChain = [];
-  let currentStage = data.chain;
 
-  while (currentStage) {
-    const pokemon = await getPokemonData(currentStage.species.name);
+  if (data.id === 67) {
+    let currentStage = data.chain;
 
-    evolutionChain.push({
-      name: pokemon.name,
-      image: pokemon.sprites.other["official-artwork"].front_default,
-      evolves: currentStage.evolves_to[0]?.evolution_details[0],
-    });
-    currentStage = currentStage.evolves_to[0];
+    const dataEvee = await getPokemonData(currentStage.species.name);
+
+    evolutionChain.push(dataEvee);
+
+    for (let i = 0; i < currentStage.evolves_to.length; i++) {
+      const pokemon = await getPokemonData(
+        currentStage.evolves_to[i].species.name
+      );
+
+      evolutionChain.push(pokemon);
+    }
+  } else {
+    let currentStage = data.chain;
+
+    while (currentStage) {
+      const pokemon = await getPokemonData(currentStage.species.name);
+
+      evolutionChain.push({
+        ...pokemon,
+        evolves: currentStage.evolution_details[0],
+      });
+
+      currentStage = currentStage.evolves_to[0];
+    }
   }
 
   return evolutionChain;
@@ -51,20 +70,37 @@ export default async function Page({ params: { name } }: Params) {
   );
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center py-2">
       <p>{name}</p>
-      <div>
+      <div className="flex gap-4 flex-wrap justify-center">
         {evolvePokemon.map((pokemon) => (
-          <div key={pokemon.name}>
-            <p>{pokemon.name}</p>
-            <Image
-              src={pokemon.image}
-              alt={pokemon.name}
-              width={200}
-              height={200}
-            />
-            <p>{pokemon.evolves?.min_level ?? ""}</p>
-          </div>
+          <Card key={pokemon.name} className="w-44 flex justify-center">
+            <CardContent>
+              <Link href={`/pokemon/${pokemon.name}`}>
+                <div className="w-full rounded-lg overflow-hidden">
+                  <Image
+                    src={
+                      pokemon.sprites.other?.["official-artwork"]?.front_default
+                    }
+                    alt={pokemon.name}
+                    width={200}
+                    height={200}
+                  />
+                </div>
+                <h1 className="text-lg  font-bold text-center">
+                  {pokemon.name}
+                </h1>
+                <p>{pokemon.evolves?.min_level ?? ""}</p>
+                <div className="flex justify-center gap-2">
+                  {pokemon.types.map((type: any) => (
+                    <div key={type.type.name}>
+                      <TypePokemon type={type.type.name} />
+                    </div>
+                  ))}
+                </div>
+              </Link>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>

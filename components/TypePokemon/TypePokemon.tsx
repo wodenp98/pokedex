@@ -1,6 +1,7 @@
 import React from "react";
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
+
+// https://pokeapi.co/api/v2/type/{id or name}/
+// console.log("evolvePokemon", evolvePokemon[0].types[0].type.url);
 
 export const TypePokemon = ({ type }: { type: string }) => {
   const colorTypes = {
@@ -18,6 +19,10 @@ export const TypePokemon = ({ type }: { type: string }) => {
     flying: "bg-blue-500",
     fighting: "bg-red-500",
     normal: "bg-gray-500",
+    ghost: "bg-purple-500",
+    ice: "bg-blue-500",
+    dark: "bg-slate-950",
+    steel: "bg-gray-500",
   };
 
   return (
