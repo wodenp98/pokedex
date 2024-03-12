@@ -1,8 +1,17 @@
 import React from "react";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Link from "next/link";
 import { TypePokemon } from "@/components/TypePokemon/TypePokemon";
+import { colorTypes } from "@/utils/helpers";
+import { CardType } from "@/components/TypePokemon/CardType";
 
 interface Params {
   params: {
@@ -42,7 +51,10 @@ async function getEvolutionOfPokemon(url: string) {
         currentStage.evolves_to[i].species.name
       );
 
-      evolutionChain.push(pokemon);
+      evolutionChain.push({
+        ...pokemon,
+        evolves: currentStage.evolves_to[i].evolution_details,
+      });
     }
   } else {
     let currentStage = data.chain;
@@ -62,18 +74,79 @@ async function getEvolutionOfPokemon(url: string) {
   return evolutionChain;
 }
 
+// type sensibilité, stats, CT/CS, evolution details, loc?
+
 export default async function Page({ params: { name } }: Params) {
   const pokemonData = await getPokemonData(name);
   const informationsPokemon = await getInformationsForPokemon(pokemonData.id);
-  const evolvePokemon = await getEvolutionOfPokemon(
-    informationsPokemon.evolution_chain.url
-  );
+  // const evolvePokemon = await getEvolutionOfPokemon(
+  //   informationsPokemon.evolution_chain.url
+  // );
+
+  console.log("info", informationsPokemon);
 
   return (
     <div className="flex flex-col items-center justify-center py-2">
-      <p>{name}</p>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {pokemonData.types.length > 1 ? (
+              <CardType
+                typeId={pokemonData.types[0].type.name}
+                typeName={pokemonData.types[1].type.name}
+                name={name}
+                id={pokemonData.id}
+              />
+            ) : (
+              <CardType
+                typeId={pokemonData.types.type.name}
+                typeName={pokemonData.types.type.name}
+                name={name}
+                id={pokemonData.id}
+              />
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Image
+            src={pokemonData.sprites.other?.["official-artwork"]?.front_default}
+            alt={name}
+            width={200}
+            height={200}
+          />
+          <div className="flex">
+            <p>Type:</p>
+            {pokemonData.types.map((type: any) => (
+              <div key={type.type.name}>
+                <TypePokemon type={type.type.name} />
+              </div>
+            ))}
+          </div>
+          <div>
+            <p>Base Experience:</p>
+            <p>{pokemonData.base_experience}</p>
+          </div>
+          <div>
+            <p>Height:</p>
+            <p>{pokemonData.height}</p>
+          </div>
+          <div>
+            <p>Weight:</p>
+            <p>{pokemonData.weight}</p>
+          </div>
+          <div>
+            <p>Abilities:</p>
+            {pokemonData.abilities.map((ability: any) => (
+              <div key={ability.ability.name}>
+                <p>{ability.ability.name}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="flex gap-4 flex-wrap justify-center">
-        {evolvePokemon.map((pokemon) => (
+        {/* {evolvePokemon.map((pokemon) => (
           <Card key={pokemon.name} className="w-44 flex justify-center">
             <CardContent>
               <Link href={`/pokemon/${pokemon.name}`}>
@@ -91,17 +164,10 @@ export default async function Page({ params: { name } }: Params) {
                   {pokemon.name}
                 </h1>
                 <p>{pokemon.evolves?.min_level ?? ""}</p>
-                <div className="flex justify-center gap-2">
-                  {pokemon.types.map((type: any) => (
-                    <div key={type.type.name}>
-                      <TypePokemon type={type.type.name} />
-                    </div>
-                  ))}
-                </div>
               </Link>
             </CardContent>
           </Card>
-        ))}
+        ))} */}
       </div>
     </div>
   );
