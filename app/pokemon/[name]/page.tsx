@@ -89,10 +89,19 @@ async function getSensibilityType(types: any) {
     const res = await fetch(url);
     const data = await res.json();
 
-    damageRelations.push({
-      name: data.name,
-      damage_relations: data.damage_relations,
-    });
+    damageRelations.push(data.damage_relations);
+  }
+
+  {
+    /* si un élément se répète = fois 2
+si no damage from ca fait direct 0
+et est ce possible de faire un objet avec unity 0
+
+*/
+  }
+
+  for (const damageRelation of damageRelations) {
+    console.log("❤️", damageRelation);
   }
 
   return damageRelations;
@@ -110,8 +119,6 @@ export default async function Page({ params: { name } }: Params) {
     pokemonData.location_area_encounters
   );
   const sensibilityType = await getSensibilityType(pokemonData.types);
-
-  console.log("👍", pokemonData);
 
   return (
     <div className="flex flex-col items-center justify-center py-2">
