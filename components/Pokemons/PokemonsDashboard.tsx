@@ -10,7 +10,7 @@ export const PokemonsDashboard = ({ pokemons }: { pokemons: any }) => {
       {pokemons.map((pokemon: any) => (
         <Card key={pokemon.name} className="w-80 flex justify-center">
           <CardContent>
-            <Link href={`/pokemon/${pokemon.name}`}>
+            <Link href={`/pokemon/${pokemon.details.id}`}>
               <div className="w-full rounded-lg overflow-hidden">
                 <Image
                   src={
@@ -26,7 +26,7 @@ export const PokemonsDashboard = ({ pokemons }: { pokemons: any }) => {
               <div className="flex justify-center gap-2">
                 {pokemon.details.types.map((type: any) => (
                   <div key={type.type.name}>
-                    <TypePokemon type={type.type.name} />
+                    <TypePokemon url={type.type.url} />
                   </div>
                 ))}
               </div>

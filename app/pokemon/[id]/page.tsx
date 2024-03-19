@@ -10,18 +10,22 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { TypePokemon } from "@/components/TypePokemon/TypePokemon";
-import { colorTypes } from "@/utils/helpers";
+import {
+  calculateTypeEffectiveness,
+  colorTypes,
+  typeChart,
+} from "@/utils/helpers";
 import { CardType } from "@/components/TypePokemon/CardType";
 
 interface Params {
   params: {
-    name: string;
+    id: number;
   };
   searchParams?: Record<string, string>;
 }
 
-async function getPokemonData(name: string) {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+async function getPokemonData(id: number) {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
   const data = await res.json();
 
   return data;
@@ -47,8 +51,10 @@ async function getEvolutionOfPokemon(url: string) {
 
   if (data.id === 67) {
     let currentStage = data.chain;
+    const pokemonId = currentStage.species.url.split("/");
+    const id = pokemonId[pokemonId.length - 2];
 
-    const dataEvee = await getPokemonData(currentStage.species.name);
+    const dataEvee = await getPokemonData(id);
 
     evolutionChain.push(dataEvee);
 
@@ -64,9 +70,11 @@ async function getEvolutionOfPokemon(url: string) {
     }
   } else {
     let currentStage = data.chain;
+    const pokemonId = currentStage.species.url.split("/");
+    const id = pokemonId[pokemonId.length - 2];
 
     while (currentStage) {
-      const pokemon = await getPokemonData(currentStage.species.name);
+      const pokemon = await getPokemonData(id);
 
       evolutionChain.push({
         ...pokemon,
@@ -80,37 +88,10 @@ async function getEvolutionOfPokemon(url: string) {
   return evolutionChain;
 }
 
-async function getSensibilityType(types: any) {
-  const urls = types.map((type: any) => type.type.url);
+// CT/CS
 
-  const damageRelations = [];
-
-  for (const url of urls) {
-    const res = await fetch(url);
-    const data = await res.json();
-
-    damageRelations.push(data.damage_relations);
-  }
-
-  {
-    /* si un élément se répète = fois 2
-si no damage from ca fait direct 0
-et est ce possible de faire un objet avec unity 0
-
-*/
-  }
-
-  for (const damageRelation of damageRelations) {
-    console.log("❤️", damageRelation);
-  }
-
-  return damageRelations;
-}
-
-// type sensibilité, stats, CT/CS, evolution details, loc?
-
-export default async function Page({ params: { name } }: Params) {
-  const pokemonData = await getPokemonData(name);
+export default async function Page({ params: { id } }: Params) {
+  const pokemonData = await getPokemonData(id);
   const informationsPokemon = await getInformationsForPokemon(pokemonData.id);
   const evolvePokemon = await getEvolutionOfPokemon(
     informationsPokemon.evolution_chain.url
@@ -118,7 +99,12 @@ export default async function Page({ params: { name } }: Params) {
   const locationsPokemon = await getLocationForPokemon(
     pokemonData.location_area_encounters
   );
-  const sensibilityType = await getSensibilityType(pokemonData.types);
+
+  const pokemonFrenchName = informationsPokemon.names.find(
+    (name: any) => name.language.name === "fr"
+  );
+
+  const sensibility = calculateTypeEffectiveness(pokemonData.types);
 
   return (
     <div className="flex flex-col items-center justify-center py-2">
@@ -127,16 +113,16 @@ export default async function Page({ params: { name } }: Params) {
           <CardTitle>
             {pokemonData.types.length > 1 ? (
               <CardType
-                typeId={pokemonData.types[0].type.name}
-                typeName={pokemonData.types[1].type.name}
-                name={name}
+                firstTypeUrl={pokemonData.types[0].type.url}
+                secondTypeUrl={pokemonData.types[1].type.url}
+                name={pokemonFrenchName.name}
                 id={pokemonData.id}
               />
             ) : (
               <CardType
-                typeId={pokemonData.types[0].type.name}
-                typeName={pokemonData.types[0].type.name}
-                name={name}
+                typeUrl={pokemonData.types[0].type.url}
+                secondTypeUrl={pokemonData.types[0].type.url}
+                name={pokemonFrenchName.name}
                 id={pokemonData.id}
               />
             )}
@@ -145,7 +131,7 @@ export default async function Page({ params: { name } }: Params) {
         <CardContent>
           <Image
             src={pokemonData.sprites.other?.["official-artwork"]?.front_default}
-            alt={name}
+            alt={pokemonData.name}
             width={200}
             height={200}
           />
@@ -153,7 +139,7 @@ export default async function Page({ params: { name } }: Params) {
             <p>Type:</p>
             {pokemonData.types.map((type: any) => (
               <div key={type.type.name}>
-                <TypePokemon type={type.type.name} />
+                <TypePokemon url={type.type.url} />
               </div>
             ))}
           </div>
