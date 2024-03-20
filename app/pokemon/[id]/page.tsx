@@ -13,6 +13,7 @@ import { TypePokemon } from "@/components/TypePokemon/TypePokemon";
 import {
   calculateTypeEffectiveness,
   colorTypes,
+  getFrenchName,
   typeChart,
 } from "@/utils/helpers";
 import { CardType } from "@/components/TypePokemon/CardType";
@@ -51,33 +52,42 @@ async function getEvolutionOfPokemon(url: string) {
 
   if (data.id === 67) {
     let currentStage = data.chain;
-    const pokemonId = currentStage.species.url.split("/");
-    const id = pokemonId[pokemonId.length - 2];
 
-    const dataEvee = await getPokemonData(id);
+    const dataEvee = await getPokemonData(currentStage.species.name);
+    const dataEveeSpecies = await getInformationsForPokemon(dataEvee.id);
 
-    evolutionChain.push(dataEvee);
+    const dataEveeFrenchName = await getFrenchName(dataEveeSpecies);
+    evolutionChain.push({
+      ...dataEvee,
+      frenchName: dataEveeFrenchName.name,
+    });
 
     for (let i = 0; i < currentStage.evolves_to.length; i++) {
       const pokemon = await getPokemonData(
         currentStage.evolves_to[i].species.name
       );
+      const pokemonSpecies = await getInformationsForPokemon(pokemon.id);
+
+      const pokemonFrenchName = await getFrenchName(pokemonSpecies);
 
       evolutionChain.push({
         ...pokemon,
+        frenchName: pokemonFrenchName.name,
         evolves: currentStage.evolves_to[i].evolution_details,
       });
     }
   } else {
     let currentStage = data.chain;
-    const pokemonId = currentStage.species.url.split("/");
-    const id = pokemonId[pokemonId.length - 2];
 
     while (currentStage) {
-      const pokemon = await getPokemonData(id);
+      const pokemon = await getPokemonData(currentStage.species.name);
+      const pokemonSpecies = await getInformationsForPokemon(pokemon.id);
+
+      const pokemonFrenchName = await getFrenchName(pokemonSpecies);
 
       evolutionChain.push({
         ...pokemon,
+        frenchName: pokemonFrenchName.name,
         evolves: currentStage.evolution_details[0],
       });
 
@@ -87,6 +97,12 @@ async function getEvolutionOfPokemon(url: string) {
 
   return evolutionChain;
 }
+
+// async function getMoves(data: any) {
+//   data.map(async (move: any) => {
+//     console.log(move.version_group_details);
+//   });
+// }
 
 // CT/CS
 
@@ -99,12 +115,12 @@ export default async function Page({ params: { id } }: Params) {
   const locationsPokemon = await getLocationForPokemon(
     pokemonData.location_area_encounters
   );
+  // const pokemonMoves = await getMoves(pokemonData.moves);
 
-  const pokemonFrenchName = informationsPokemon.names.find(
-    (name: any) => name.language.name === "fr"
-  );
-
+  const pokemonFrenchName = await getFrenchName(informationsPokemon);
   const sensibility = calculateTypeEffectiveness(pokemonData.types);
+
+  // console.log("👍", evolvePokemon);
 
   return (
     <div className="flex flex-col items-center justify-center py-2">
@@ -120,7 +136,7 @@ export default async function Page({ params: { id } }: Params) {
               />
             ) : (
               <CardType
-                typeUrl={pokemonData.types[0].type.url}
+                firstTypeUrl={pokemonData.types[0].type.url}
                 secondTypeUrl={pokemonData.types[0].type.url}
                 name={pokemonFrenchName.name}
                 id={pokemonData.id}
@@ -212,14 +228,14 @@ export default async function Page({ params: { id } }: Params) {
           </div>
         ))}
       </div>
-      <div>
+      {/* <div>
         <p>Moves</p>
         {pokemonData.moves.map((move: any) => (
           <div key={move.move.name}>
             <p>{move.move.name}</p>
           </div>
         ))}
-      </div>
+      </div> */}
 
       <div>
         <p>Locations</p>
@@ -236,21 +252,21 @@ export default async function Page({ params: { id } }: Params) {
 
       <div className="flex gap-4 flex-wrap justify-center">
         {evolvePokemon.map((pokemon) => (
-          <Card key={pokemon.name} className="w-44 flex justify-center">
+          <Card key={pokemon.frenchName} className="w-44 flex justify-center">
             <CardContent>
-              <Link href={`/pokemon/${pokemon.name}`}>
+              <Link href={`/pokemon/${pokemon.id}`}>
                 <div className="w-full rounded-lg overflow-hidden">
                   <Image
                     src={
                       pokemon.sprites.other?.["official-artwork"]?.front_default
                     }
-                    alt={pokemon.name}
+                    alt={pokemon.frenchName}
                     width={200}
                     height={200}
                   />
                 </div>
                 <h1 className="text-lg  font-bold text-center">
-                  {pokemon.name}
+                  {pokemon.frenchName}
                 </h1>
                 <p>{pokemon.evolves?.min_level ?? ""}</p>
               </Link>

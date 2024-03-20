@@ -1,13 +1,12 @@
-import { colorTypes } from "@/utils/helpers";
+// import { colorTypes } from "@/utils/helpers";
+import { getFrenchName } from "@/utils/helpers";
 import React from "react";
 
 async function getFrenchFirstType(url: string) {
   const res = await fetch(url);
   const data = await res.json();
 
-  const nameFrench = data.names.find(
-    (name: any) => name.language.name === "fr"
-  );
+  const nameFrench = await getFrenchName(data);
 
   return nameFrench;
 }
@@ -16,12 +15,31 @@ async function getFrenchSecondType(url: string) {
   const res = await fetch(url);
   const data = await res.json();
 
-  const nameFrench = data.names.find(
-    (name: any) => name.language.name === "fr"
-  );
+  const nameFrench = await getFrenchName(data);
 
   return nameFrench;
 }
+
+const colorTypes = {
+  feu: "bg-red-500",
+  eau: "bg-blue-500",
+  plante: "bg-green-500",
+  électrik: "bg-yellow-500",
+  sol: "bg-yellow-950",
+  roche: "bg-gray-500",
+  fée: "bg-pink-500",
+  poison: "bg-purple-500",
+  insecte: "bg-green-500",
+  dragon: "bg-purple-500",
+  psy: "bg-pink-500",
+  vol: "bg-blue-500",
+  combat: "bg-red-500",
+  normal: "bg-gray-500",
+  spectre: "bg-purple-500",
+  glace: "bg-blue-500",
+  ténèbres: "bg-slate-950",
+  acier: "bg-gray-500",
+};
 
 export const CardType = async ({
   firstTypeUrl,

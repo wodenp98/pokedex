@@ -24,7 +24,7 @@ export async function getPokemons({
       );
       const data = await pokemonRes.json();
 
-      const name = data.names.find((name: any) => name.language.name === "fr");
+      const name = await getFrenchName(data);
 
       return name;
     })
@@ -252,4 +252,9 @@ export const calculateTypeEffectiveness = (
   }
 
   return typeDefences;
+};
+
+export const getFrenchName = async (data: any) => {
+  const name = data.names.find((name: any) => name.language.name === "fr");
+  return name;
 };
