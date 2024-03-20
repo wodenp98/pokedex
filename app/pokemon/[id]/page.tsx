@@ -42,6 +42,7 @@ async function getInformationsForPokemon(id: number) {
 async function getLocationForPokemon(url: string) {
   const res = await fetch(url);
   const data = await res.json();
+
   return data;
 }
 
@@ -112,15 +113,15 @@ export default async function Page({ params: { id } }: Params) {
   const evolvePokemon = await getEvolutionOfPokemon(
     informationsPokemon.evolution_chain.url
   );
-  const locationsPokemon = await getLocationForPokemon(
-    pokemonData.location_area_encounters
-  );
+  // const locationsPokemon = await getLocationForPokemon(
+  //   pokemonData.location_area_encounters
+  // );
   // const pokemonMoves = await getMoves(pokemonData.moves);
 
   const pokemonFrenchName = await getFrenchName(informationsPokemon);
-  const sensibility = calculateTypeEffectiveness(pokemonData.types);
+  const sensibility = await calculateTypeEffectiveness(pokemonData.types);
 
-  // console.log("👍", evolvePokemon);
+  console.log("sensibility", sensibility);
 
   return (
     <div className="flex flex-col items-center justify-center py-2">
@@ -237,14 +238,14 @@ export default async function Page({ params: { id } }: Params) {
         ))}
       </div> */}
 
-      <div>
+      {/* <div>
         <p>Locations</p>
         {locationsPokemon.map((location: any) => (
           <div key={location.location_area.name}>
             <p>{location.location_area.name}</p>
           </div>
         ))}
-      </div>
+      </div> */}
 
       <div>
         <p>Sensibility</p>

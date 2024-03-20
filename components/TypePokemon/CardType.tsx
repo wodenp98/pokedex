@@ -1,24 +1,6 @@
 // import { colorTypes } from "@/utils/helpers";
-import { getFrenchName } from "@/utils/helpers";
+import { getFrenchFirstType, getFrenchSecondType } from "@/utils/helpers";
 import React from "react";
-
-async function getFrenchFirstType(url: string) {
-  const res = await fetch(url);
-  const data = await res.json();
-
-  const nameFrench = await getFrenchName(data);
-
-  return nameFrench;
-}
-
-async function getFrenchSecondType(url: string) {
-  const res = await fetch(url);
-  const data = await res.json();
-
-  const nameFrench = await getFrenchName(data);
-
-  return nameFrench;
-}
 
 const colorTypes = {
   feu: "bg-red-500",

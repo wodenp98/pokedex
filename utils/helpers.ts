@@ -43,6 +43,24 @@ export async function getPokemons({
   return pokemonsWithDetails;
 }
 
+export async function getFrenchFirstType(url: string) {
+  const res = await fetch(url);
+  const data = await res.json();
+
+  const nameFrench = await getFrenchName(data);
+
+  return nameFrench;
+}
+
+export async function getFrenchSecondType(url: string) {
+  const res = await fetch(url);
+  const data = await res.json();
+
+  const nameFrench = await getFrenchName(data);
+
+  return nameFrench;
+}
+
 export const colorTypes = {
   feu: "bg-red-500",
   eau: "bg-blue-500",
@@ -67,119 +85,119 @@ export const colorTypes = {
 export const typeChart = [
   {
     name: "normal",
-    immunes: ["ghost"],
-    weaknesses: ["rock", "steel"],
+    immunes: ["spectre"],
+    weaknesses: ["roche", "acier"],
     strengths: [],
   },
   {
-    name: "fire",
+    name: "feu",
     immunes: [],
-    weaknesses: ["fire", "water", "rock", "dragon"],
-    strengths: ["grass", "ice", "bug", "steel"],
+    weaknesses: ["feu", "eau", "roche", "dragon"],
+    strengths: ["plante", "glace", "insecte", "acier"],
   },
   {
-    name: "water",
+    name: "eau",
     immunes: [],
-    weaknesses: ["water", "grass", "dragon"],
-    strengths: ["fire", "ground", "rock"],
+    weaknesses: ["eau", "plante", "dragon"],
+    strengths: ["feu", "sol", "roche"],
   },
   {
-    name: "electric",
-    immunes: ["ground"],
-    weaknesses: ["electric", "grass", "dragon"],
-    strengths: ["water", "flying"],
+    name: "électrik",
+    immunes: ["sol"],
+    weaknesses: ["électrik", "plante", "dragon"],
+    strengths: ["eau", "vol"],
   },
   {
-    name: "grass",
+    name: "plante",
     immunes: [],
-    weaknesses: ["fire", "grass", "poison", "flying", "bug", "dragon", "steel"],
-    strengths: ["water", "ground", "rock"],
+    weaknesses: [
+      "feu",
+      "plante",
+      "poison",
+      "vol",
+      "insecte",
+      "dragon",
+      "acier",
+    ],
+    strengths: ["eau", "sol", "roche"],
   },
   {
-    name: "ice",
+    name: "glace",
     immunes: [],
-    weaknesses: ["fire", "water", "ice", "steel"],
-    strengths: ["grass", "ground", "flying", "dragon"],
+    weaknesses: ["feu", "eau", "glace", "acier"],
+    strengths: ["plante", "sol", "vol", "dragon"],
   },
   {
-    name: "fighting",
-    immunes: ["ghost"],
-    weaknesses: ["poison", "flying", "psychic", "bug", "fairy"],
-    strengths: ["normal", "ice", "rock", "dark", "steel"],
+    name: "combat",
+    immunes: ["spectre"],
+    weaknesses: ["poison", "vol", "psy", "insecte", "fée"],
+    strengths: ["normal", "glace", "roche", "ténèbres", "acier"],
   },
   {
     name: "poison",
-    immunes: ["steel"],
-    weaknesses: ["poison", "ground", "rock", "ghost"],
-    strengths: ["grass", "fairy"],
+    immunes: ["acier"],
+    weaknesses: ["poison", "sol", "roche", "spectre"],
+    strengths: ["plante", "fée"],
   },
   {
-    name: "ground",
-    immunes: ["flying"],
-    weaknesses: ["grass", "bug"],
-    strengths: ["fire", "electric", "poison", "rock", "steel"],
+    name: "sol",
+    immunes: ["vol"],
+    weaknesses: ["plante", "insecte"],
+    strengths: ["feu", "électrik", "poison", "roche", "acier"],
   },
   {
-    name: "flying",
+    name: "vol",
     immunes: [],
-    weaknesses: ["electric", "rock", "steel"],
-    strengths: ["grass", "fighting", "bug"],
+    weaknesses: ["électrik", "roche", "acier"],
+    strengths: ["plante", "combat", "insecte"],
   },
   {
-    name: "psychic",
-    immunes: ["dark"],
-    weaknesses: ["psychic", "steel"],
-    strengths: ["fighting", "poison"],
+    name: "psy",
+    immunes: ["ténèbres"],
+    weaknesses: ["psy", "acier"],
+    strengths: ["combat", "poison"],
   },
   {
-    name: "bug",
+    name: "insecte",
     immunes: [],
-    weaknesses: [
-      "fire",
-      "fighting",
-      "poison",
-      "flying",
-      "ghost",
-      "steel",
-      "fairy",
-    ],
-    strengths: ["grass", "psychic", "dark"],
+    weaknesses: ["feu", "combat", "poison", "vol", "spectre", "acier", "fée"],
+    strengths: ["plante", "psy", "ténèbres"],
   },
   {
-    name: "rock",
+    name: "roche",
     immunes: [],
-    weaknesses: ["fighting", "ground", "steel"],
-    strengths: ["fire", "ice", "flying", "bug"],
+    weaknesses: ["combat", "sol", "acier"],
+    strengths: ["feu", "glace", "vol", "insecte"],
   },
   {
-    name: "ghost",
+    name: "spectre",
     immunes: ["normal"],
-    weaknesses: ["dark"],
-    strengths: ["psychic", "ghost"],
+    weaknesses: ["ténèbres"],
+    strengths: ["psy", "spectre"],
   },
   {
     name: "dragon",
-    immunes: ["fairy"],
-    weaknesses: ["steel"],
+    immunes: ["fée"],
+    weaknesses: ["acier"],
     strengths: ["dragon"],
   },
   {
-    name: "dark",
+    name: "ténèbres",
     immunes: [],
-    weaknesses: ["fighting", "dark", "fairy"],
-    strengths: ["psychic", "ghost"],
+    weaknesses: ["combat", "ténèbres", "fée"],
+    strengths: ["psy", "spectre"],
   },
   {
-    name: "steel",
+    name: "acier",
     immunes: [],
-    weaknesses: ["fire", "water", "electric", "steel"],
-    strengths: ["ice", "rock", "fairy"],
+    weaknesses: ["feu", "eau", "électrik", "acier"],
+    strengths: ["glace", "roche", "fée"],
   },
   {
-    name: "fairy",
+    name: "fée",
     immunes: [],
-    weaknesses: ["fire", "poison", "steel"],
-    strengths: ["fighting", "dragon", "dark"],
+    weaknesses: ["feu", "poison", "acier"],
+    strengths: ["combat", "dragon", "ténèbres"],
   },
 ];
 
@@ -191,64 +209,55 @@ interface PokemonType {
   };
 }
 
-interface TypeDefences {
-  "4x": string[];
-  "2x": string[];
-  "1x": string[];
-  "0.5x": string[];
-  "0.25x": string[];
-  "0x": string[];
-}
-
-export const calculateTypeEffectiveness = (
+export const calculateTypeEffectiveness = async (
   pokemonTypes: PokemonType[]
-): TypeDefences => {
-  let typeDefences: TypeDefences = {
-    "4x": [],
-    "2x": [],
-    "1x": [],
-    "0.5x": [],
-    "0.25x": [],
-    "0x": [],
-  };
+) => {
+  let typeDefences: Array<{ type: string; effectiveness: string }> = [];
 
-  let type1 = pokemonTypes[0].type.name;
-  let type2 = pokemonTypes[1]?.type.name || "";
+  const getFirstType = await getFrenchFirstType(pokemonTypes[0].type.url);
+  const getSecondType = await getFrenchFirstType(pokemonTypes[1].type.url);
+
+  let type1 = getFirstType.name.toLowerCase();
+  let type2 = getSecondType.name.toLowerCase() || "";
 
   for (const type of typeChart) {
+    let effectiveness = "";
+
     if (type["immunes"].includes(type1) || type["immunes"].includes(type2)) {
-      typeDefences["0x"].push(type["name"]);
+      effectiveness = "0x";
     } else if (
       type["weaknesses"].includes(type1) &&
       type["weaknesses"].includes(type2)
     ) {
-      typeDefences["0.25x"].push(type["name"]);
+      effectiveness = "0.25x";
     } else if (
       type["strengths"].includes(type1) &&
       type["strengths"].includes(type2)
     ) {
-      typeDefences["4x"].push(type["name"]);
+      effectiveness = "4x";
     } else if (
       (type["strengths"].includes(type1) &&
         type["weaknesses"].includes(type2)) ||
       (type["strengths"].includes(type2) && type["weaknesses"].includes(type1))
     ) {
-      typeDefences["1x"].push(type["name"]);
+      effectiveness = "1x";
     } else if (
       (!type["strengths"].includes(type1) &&
         type["weaknesses"].includes(type2)) ||
       (!type["strengths"].includes(type2) && type["weaknesses"].includes(type1))
     ) {
-      typeDefences["0.5x"].push(type["name"]);
+      effectiveness = "0.5x";
     } else if (
       (type["strengths"].includes(type1) &&
         !type["weaknesses"].includes(type2)) ||
       (type["strengths"].includes(type2) && !type["weaknesses"].includes(type1))
     ) {
-      typeDefences["2x"].push(type["name"]);
+      effectiveness = "2x";
     } else {
-      typeDefences["1x"].push(type["name"]);
+      effectiveness = "1x";
     }
+
+    typeDefences.push({ type: type["name"], effectiveness });
   }
 
   return typeDefences;
