@@ -215,10 +215,13 @@ export const calculateTypeEffectiveness = async (
   let typeDefences: Array<{ type: string; effectiveness: string }> = [];
 
   const getFirstType = await getFrenchFirstType(pokemonTypes[0].type.url);
-  const getSecondType = await getFrenchFirstType(pokemonTypes[1].type.url);
+  const getSecondType =
+    pokemonTypes.length > 1
+      ? await getFrenchSecondType(pokemonTypes[1].type.url)
+      : "";
 
   let type1 = getFirstType.name.toLowerCase();
-  let type2 = getSecondType.name.toLowerCase() || "";
+  let type2 = getSecondType ? getSecondType.name.toLowerCase() : "";
 
   for (const type of typeChart) {
     let effectiveness = "";

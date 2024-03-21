@@ -17,6 +17,7 @@ import {
   typeChart,
 } from "@/utils/helpers";
 import { CardType } from "@/components/TypePokemon/CardType";
+import { PokemonsMoves } from "@/components/Pokemons/PokemonsMoves";
 
 interface Params {
   params: {
@@ -107,7 +108,7 @@ async function getEvolutionOfPokemon(url: string) {
 
 // CT/CS
 
-export default async function Page({ params: { id } }: Params) {
+export default async function Page({ params: { id }, searchParams }: Params) {
   const pokemonData = await getPokemonData(id);
   const informationsPokemon = await getInformationsForPokemon(pokemonData.id);
   const evolvePokemon = await getEvolutionOfPokemon(
@@ -121,115 +122,120 @@ export default async function Page({ params: { id } }: Params) {
   const pokemonFrenchName = await getFrenchName(informationsPokemon);
   const sensibility = await calculateTypeEffectiveness(pokemonData.types);
 
-  console.log("sensibility", sensibility);
+  console.log("👍", searchParams?.generation);
 
   return (
-    <div className="flex flex-col items-center justify-center py-2">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {pokemonData.types.length > 1 ? (
-              <CardType
-                firstTypeUrl={pokemonData.types[0].type.url}
-                secondTypeUrl={pokemonData.types[1].type.url}
-                name={pokemonFrenchName.name}
-                id={pokemonData.id}
-              />
-            ) : (
-              <CardType
-                firstTypeUrl={pokemonData.types[0].type.url}
-                secondTypeUrl={pokemonData.types[0].type.url}
-                name={pokemonFrenchName.name}
-                id={pokemonData.id}
-              />
-            )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Image
-            src={pokemonData.sprites.other?.["official-artwork"]?.front_default}
-            alt={pokemonData.name}
-            width={200}
-            height={200}
-          />
-          <div className="flex">
-            <p>Type:</p>
-            {pokemonData.types.map((type: any) => (
-              <div key={type.type.name}>
-                <TypePokemon url={type.type.url} />
-              </div>
-            ))}
-          </div>
-          <div>
-            <p>Base Experience:</p>
-            <p>{pokemonData.base_experience}</p>
-          </div>
-          <div>
-            <p>Height:</p>
-            <p>{pokemonData.height}</p>
-          </div>
-          <div>
-            <p>Weight:</p>
-            <p>{pokemonData.weight}</p>
-          </div>
-          <div>
-            <p>Abilities:</p>
-            {pokemonData.abilities.map((ability: any) => (
-              <div key={ability.ability.name}>
-                <p>{ability.ability.name}</p>
-              </div>
-            ))}
-          </div>
-          <div>
-            <p>Capture rate:</p>
-            <p>{informationsPokemon.capture_rate}</p>
-          </div>
-          <div>
-            <p>Color</p>
-            <p>{informationsPokemon.color.name}</p>
-          </div>
-          <div>
-            <p>Egg groups</p>
-            {informationsPokemon.egg_groups.map((eggGroup: any) => (
-              <div key={eggGroup.name}>
-                <p>{eggGroup.name}</p>
-              </div>
-            ))}
-          </div>
-          <div>
-            <p>Growth rate</p>
-            <p>{informationsPokemon.growth_rate.name}</p>
-          </div>
-          <div>
-            <p>Hatch counter</p>
-            <p>{informationsPokemon.hatch_counter}</p>
-          </div>
-          <div>
-            <p>Shape</p>
-            <p>{informationsPokemon.shape.name}</p>
-          </div>
-          <div>
-            <p>Pokedex number</p>
-            {informationsPokemon.pokedex_numbers.map((pokedexNumber: any) => (
-              <div key={pokedexNumber.entry_number}>
-                <p>{pokedexNumber.entry_number}</p>
-                <p>{pokedexNumber.pokedex.name}</p>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+    <div>
+      <div className="flex flex-col items-center justify-center py-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {pokemonData.types.length > 1 ? (
+                <CardType
+                  firstTypeUrl={pokemonData.types[0].type.url}
+                  secondTypeUrl={pokemonData.types[1].type.url}
+                  name={pokemonFrenchName.name}
+                  id={pokemonData.id}
+                />
+              ) : (
+                <CardType
+                  firstTypeUrl={pokemonData.types[0].type.url}
+                  secondTypeUrl={pokemonData.types[0].type.url}
+                  name={pokemonFrenchName.name}
+                  id={pokemonData.id}
+                />
+              )}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Image
+              src={
+                pokemonData.sprites.other?.["official-artwork"]?.front_default
+              }
+              alt={pokemonData.name}
+              width={200}
+              height={200}
+            />
+            <div className="flex">
+              <p>Type:</p>
+              {pokemonData.types.map((type: any) => (
+                <div key={type.type.name}>
+                  <TypePokemon url={type.type.url} />
+                </div>
+              ))}
+            </div>
+            <div>
+              <p>Base Experience:</p>
+              <p>{pokemonData.base_experience}</p>
+            </div>
+            <div>
+              <p>Height:</p>
+              <p>{pokemonData.height}</p>
+            </div>
+            <div>
+              <p>Weight:</p>
+              <p>{pokemonData.weight}</p>
+            </div>
+            <div>
+              <p>Abilities:</p>
+              {pokemonData.abilities.map((ability: any) => (
+                <div key={ability.ability.name}>
+                  <p>{ability.ability.name}</p>
+                </div>
+              ))}
+            </div>
+            <div>
+              <p>Capture rate:</p>
+              <p>{informationsPokemon.capture_rate}</p>
+            </div>
+            <div>
+              <p>Color</p>
+              <p>{informationsPokemon.color.name}</p>
+            </div>
+            <div>
+              <p>Egg groups</p>
+              {informationsPokemon.egg_groups.map((eggGroup: any) => (
+                <div key={eggGroup.name}>
+                  <p>{eggGroup.name}</p>
+                </div>
+              ))}
+            </div>
+            <div>
+              <p>Growth rate</p>
+              <p>{informationsPokemon.growth_rate.name}</p>
+            </div>
+            <div>
+              <p>Hatch counter</p>
+              <p>{informationsPokemon.hatch_counter}</p>
+            </div>
+            <div>
+              <p>Shape</p>
+              <p>{informationsPokemon.shape.name}</p>
+            </div>
+            <div>
+              <p>Pokedex number</p>
+              {informationsPokemon.pokedex_numbers.map((pokedexNumber: any) => (
+                <div key={pokedexNumber.entry_number}>
+                  <p>{pokedexNumber.entry_number}</p>
+                  <p>{pokedexNumber.pokedex.name}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
-      <div>
-        <p>Stats</p>
-        {pokemonData.stats.map((stat: any) => (
-          <div key={stat.stat.name}>
-            <p>{stat.stat.name}</p>
-            <p>{stat.base_stat}</p>
-          </div>
-        ))}
-      </div>
-      {/* <div>
+        <PokemonsMoves />
+
+        <div>
+          <p>Stats</p>
+          {pokemonData.stats.map((stat: any) => (
+            <div key={stat.stat.name}>
+              <p>{stat.stat.name}</p>
+              <p>{stat.base_stat}</p>
+            </div>
+          ))}
+        </div>
+        {/* <div>
         <p>Moves</p>
         {pokemonData.moves.map((move: any) => (
           <div key={move.move.name}>
@@ -238,7 +244,7 @@ export default async function Page({ params: { id } }: Params) {
         ))}
       </div> */}
 
-      {/* <div>
+        {/* <div>
         <p>Locations</p>
         {locationsPokemon.map((location: any) => (
           <div key={location.location_area.name}>
@@ -246,34 +252,43 @@ export default async function Page({ params: { id } }: Params) {
           </div>
         ))}
       </div> */}
+        <div>
+          <p>Sensibility</p>
+          <div className="flex">
+            {sensibility.map((type: any) => (
+              <div key={type.type} className="">
+                <p>{type.type}</p>
+                <p>{type.effectiveness}</p>
+              </div>
+            ))}
+          </div>
+        </div>
 
-      <div>
-        <p>Sensibility</p>
-      </div>
-
-      <div className="flex gap-4 flex-wrap justify-center">
-        {evolvePokemon.map((pokemon) => (
-          <Card key={pokemon.frenchName} className="w-44 flex justify-center">
-            <CardContent>
-              <Link href={`/pokemon/${pokemon.id}`}>
-                <div className="w-full rounded-lg overflow-hidden">
-                  <Image
-                    src={
-                      pokemon.sprites.other?.["official-artwork"]?.front_default
-                    }
-                    alt={pokemon.frenchName}
-                    width={200}
-                    height={200}
-                  />
-                </div>
-                <h1 className="text-lg  font-bold text-center">
-                  {pokemon.frenchName}
-                </h1>
-                <p>{pokemon.evolves?.min_level ?? ""}</p>
-              </Link>
-            </CardContent>
-          </Card>
-        ))}
+        <div className="flex gap-4 flex-wrap justify-center">
+          {evolvePokemon.map((pokemon) => (
+            <Card key={pokemon.frenchName} className="w-44 flex justify-center">
+              <CardContent>
+                <Link href={`/pokemon/${pokemon.id}`}>
+                  <div className="w-full rounded-lg overflow-hidden">
+                    <Image
+                      src={
+                        pokemon.sprites.other?.["official-artwork"]
+                          ?.front_default
+                      }
+                      alt={pokemon.frenchName}
+                      width={200}
+                      height={200}
+                    />
+                  </div>
+                  <h1 className="text-lg  font-bold text-center">
+                    {pokemon.frenchName}
+                  </h1>
+                  <p>{pokemon.evolves?.min_level ?? ""}</p>
+                </Link>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
