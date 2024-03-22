@@ -100,11 +100,18 @@ async function getEvolutionOfPokemon(url: string) {
   return evolutionChain;
 }
 
-// async function getMoves(data: any) {
-//   data.map(async (move: any) => {
-//     console.log(move.version_group_details);
-//   });
-// }
+async function getMoves({ data, generation }: { data: any; generation: any }) {
+  console.log("data", data);
+  console.log("👍", generation);
+
+  if (!generation) {
+    console.log("1", 1);
+  }
+
+  // data.map(async (move: any) => {
+  //   console.log(move.version_group_details);
+  // });
+}
 
 // CT/CS
 
@@ -117,12 +124,14 @@ export default async function Page({ params: { id }, searchParams }: Params) {
   // const locationsPokemon = await getLocationForPokemon(
   //   pokemonData.location_area_encounters
   // );
-  // const pokemonMoves = await getMoves(pokemonData.moves);
+
+  const pokemonMoves = await getMoves({
+    data: pokemonData.moves,
+    generation: searchParams?.generation,
+  });
 
   const pokemonFrenchName = await getFrenchName(informationsPokemon);
   const sensibility = await calculateTypeEffectiveness(pokemonData.types);
-
-  console.log("👍", searchParams?.generation);
 
   return (
     <div>
