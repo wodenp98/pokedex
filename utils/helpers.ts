@@ -344,19 +344,7 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
     (move) => move.version_group_details.length > 0
   );
 
-  // const statsMoves = await Promise.all(
-  //   filteredMoves.map(async (move) => {
-  //     const moveRes = await fetch(move.move.url);
-  //     const data = await moveRes.json();
-  //     const nameFrench = await getFrenchName(data);
-
-  //     return { ...data, name: nameFrench.name };
-  //   })
-  // );
-
-  // console.log("👍", filteredMoves);
-
-  for (const move of filteredMoves) {
+  for (let move of filteredMoves) {
     const moveRes = await fetch(move.move.url);
     const data = await moveRes.json();
     const nameFrench = await getFrenchName(data);
