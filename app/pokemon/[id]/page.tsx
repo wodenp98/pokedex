@@ -45,6 +45,32 @@ async function getLocationForPokemon(url: string) {
   const res = await fetch(url);
   const data = await res.json();
 
+  for (const location of data) {
+    const res = await fetch(location.location_area.url);
+    const data = await res.json();
+
+    const resLocation = await fetch(data.location.url);
+    const dataLocation = await resLocation.json();
+
+    const getLocationInFrench = await getFrenchName(dataLocation);
+
+    location.location_area.name = getLocationInFrench.name;
+
+    const versions = await Promise.all(
+      location.version_details.map(async (version: any) => {
+        const res = await fetch(version.version.url);
+        const data = await res.json();
+        const getFrenchVersion = await getFrenchName(data);
+        version.version.name = getFrenchVersion.name;
+        console.log("version", version.version.name);
+        return version;
+      })
+    );
+
+    // Replace version_details with resolved versions
+    location.version_details = versions;
+  }
+
   return data;
 }
 
@@ -101,36 +127,15 @@ async function getEvolutionOfPokemon(url: string) {
   return evolutionChain;
 }
 
-async function getMoves({ data, generation }: { data: any; generation: any }) {
-  if (!generation) {
-    generation = 1;
-  }
-
-  const res = await fetch(
-    `https://pokeapi.co/api/v2/generation/${generation}/`
-  );
-  const dataGeneration = await res.json();
-
-  // const versions = dataGeneration.version_groups.map(
-  //   (versions: any) => versions.name
-  // );
-
-  // console.log("versions", versions);
-
-  console.log("👍", data);
-}
-
-// CT/CS
-
 export default async function Page({ params: { id }, searchParams }: Params) {
   const pokemonData = await getPokemonData(id);
   const informationsPokemon = await getInformationsForPokemon(pokemonData.id);
   const evolvePokemon = await getEvolutionOfPokemon(
     informationsPokemon.evolution_chain.url
   );
-  // const locationsPokemon = await getLocationForPokemon(
-  //   pokemonData.location_area_encounters
-  // );
+  const locationsPokemon = await getLocationForPokemon(
+    pokemonData.location_area_encounters
+  );
 
   const pokemonMoves = await getMovesByGeneration(
     pokemonData.moves,

@@ -268,6 +268,7 @@ export const calculateTypeEffectiveness = async (
 
 export const getFrenchName = async (data: any) => {
   const name = data.names.find((name: any) => name.language.name === "fr");
+
   return name;
 };
 
