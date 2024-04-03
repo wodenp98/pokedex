@@ -12,7 +12,7 @@ import Link from "next/link";
 import { TypePokemon } from "@/components/TypePokemon/TypePokemon";
 import {
   calculateTypeEffectiveness,
-  colorTypes,
+  getFrenchFirstType,
   getFrenchName,
   getMovesByGeneration,
   typeChart,
@@ -26,6 +26,48 @@ interface Params {
   };
   searchParams?: Record<string, string>;
 }
+
+const backgroundColorTypes = {
+  feu: "bg-[#FDDCD5]",
+  eau: "bg-[#D7EBFF]",
+  plante: "bg-[#E4F5DC]",
+  électrik: "bg-[#FFF3D5]",
+  sol: "bg-[#F6F0DE]",
+  roche: "bg-[#F1EDDE]",
+  fée: "bg-[#F8EAF9]",
+  poison: "bg-[#F0DEED]",
+  insecte: "bg-[#EEF1D2]",
+  dragon: "bg-[#E7DDFD]",
+  psy: "bg-[#FFE3ED]",
+  vol: "bg-[#EBEEFD]",
+  combat: "bg-[#FFEDDD]",
+  normal: "bg-[#EEEDE9]",
+  spectre: "bg-[#F7E1F7]",
+  glace: "bg-[#DEF5FA]",
+  ténèbres: "bg-[#E3DEDA]",
+  acier: "bg-[#EEEEF3]",
+};
+
+const colorTypes = {
+  feu: "bg-[#E72324]",
+  eau: "bg-[#2481EF]",
+  plante: "bg-[#3da224]",
+  électrik: "bg-[#FAC100]",
+  sol: "bg-[#92501B]",
+  roche: "bg-[#b0aa82]",
+  fée: "bg-[#EF70EF]",
+  poison: "bg-[#923FCC]",
+  insecte: "bg-[#92A212]",
+  dragon: "bg-[#4F60E2]",
+  psy: "bg-[#ef3f7a]",
+  vol: "bg-[#82BAEF]",
+  combat: "bg-[#FF8100]",
+  normal: "bg-[#A0A2A0]",
+  spectre: "bg-[#703F70]",
+  glace: "bg-[#3DD9FF]",
+  ténèbres: "bg-[#4F3F3D]",
+  acier: "bg-[#60A2B9]",
+};
 
 async function getPokemonData(id: number) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -62,7 +104,6 @@ async function getLocationForPokemon(url: string) {
         const data = await res.json();
         const getFrenchVersion = await getFrenchName(data);
         version.version.name = getFrenchVersion.name;
-        console.log("version", version.version.name);
         return version;
       })
     );
@@ -130,6 +171,9 @@ async function getEvolutionOfPokemon(url: string) {
 export default async function Page({ params: { id }, searchParams }: Params) {
   const pokemonData = await getPokemonData(id);
   const informationsPokemon = await getInformationsForPokemon(pokemonData.id);
+
+  const typeFrench = await getFrenchFirstType(pokemonData.types[0].type.url);
+
   const evolvePokemon = await getEvolutionOfPokemon(
     informationsPokemon.evolution_chain.url
   );
@@ -148,43 +192,100 @@ export default async function Page({ params: { id }, searchParams }: Params) {
   return (
     <div>
       <div className="flex flex-col items-center justify-center py-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              {pokemonData.types.length > 1 ? (
-                <CardType
-                  firstTypeUrl={pokemonData.types[0].type.url}
-                  secondTypeUrl={pokemonData.types[1].type.url}
-                  name={pokemonFrenchName.name}
-                  id={pokemonData.id}
-                />
-              ) : (
-                <CardType
-                  firstTypeUrl={pokemonData.types[0].type.url}
-                  secondTypeUrl={pokemonData.types[0].type.url}
-                  name={pokemonFrenchName.name}
-                  id={pokemonData.id}
-                />
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Image
-              src={
-                pokemonData.sprites.other?.["official-artwork"]?.front_default
-              }
-              alt={pokemonData.name}
-              width={200}
-              height={200}
-            />
-            <div className="flex">
-              <p>Type:</p>
+        <div
+          className={`rounded-lg w-[350px]  border text-card-foreground shadow-sm ${
+            backgroundColorTypes[
+              typeFrench.name.toLowerCase() as keyof typeof backgroundColorTypes
+            ]
+          }`}
+        >
+          <div className="p-1">
+            {pokemonData.types.length > 1 ? (
+              <CardType
+                firstTypeUrl={pokemonData.types[0].type.url}
+                secondTypeUrl={pokemonData.types[1].type.url}
+                name={pokemonFrenchName.name}
+                id={pokemonData.id}
+              />
+            ) : (
+              <CardType
+                firstTypeUrl={pokemonData.types[0].type.url}
+                secondTypeUrl={pokemonData.types[0].type.url}
+                name={pokemonFrenchName.name}
+                id={pokemonData.id}
+              />
+            )}
+          </div>
+          <div className="flex items-center justify-center p-1">
+            <div className="w-full flex items-center justify-center bg-white rounded">
+              <Image
+                src={
+                  pokemonData.sprites.other?.["official-artwork"]?.front_default
+                }
+                alt={pokemonData.name}
+                width={280}
+                height={250}
+                quality={100}
+              />
+            </div>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-4`}
+            >
+              Nom anglais
+            </p>
+            <p className="capitalize  bg-white rounded w-3/5 p-4">
+              {pokemonData.name}
+            </p>
+          </div>
+          <div className="flex flex-col gap-1 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-full p-4`}
+            >
+              Numéros de Pokédex
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-1 w-full">
+              {informationsPokemon.pokedex_numbers.map((pokedexNumber: any) => (
+                <div key={pokedexNumber.pokedex.name} className="h-20 w-20">
+                  <div className="bg-white rounded flex flex-col items-center justify-center p-1 w-full h-full">
+                    <p className="capitalize text-blue-600 text-sm text-center">
+                      {pokedexNumber.pokedex.name.replace(/-/g, " ")}
+                    </p>
+                    <p>{pokedexNumber.entry_number}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-4`}
+            >
+              Types
+            </p>
+            <div className="bg-white rounded w-3/5 flex items-center justify-center p-4">
               {pokemonData.types.map((type: any) => (
                 <div key={type.type.name}>
                   <TypePokemon url={type.type.url} />
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+        {/* 
             <div>
               <p>Base Experience:</p>
               <p>{pokemonData.base_experience}</p>
@@ -233,21 +334,11 @@ export default async function Page({ params: { id }, searchParams }: Params) {
               <p>Shape</p>
               <p>{informationsPokemon.shape.name}</p>
             </div>
-            <div>
-              <p>Pokedex number</p>
-              {informationsPokemon.pokedex_numbers.map((pokedexNumber: any) => (
-                <div key={pokedexNumber.entry_number}>
-                  <p>{pokedexNumber.entry_number}</p>
-                  <p>{pokedexNumber.pokedex.name}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+ */}
 
-        <PokemonsMoves />
+        {/* <PokemonsMoves /> */}
 
-        <div>
+        {/* <div>
           <p>Stats</p>
           {pokemonData.stats.map((stat: any) => (
             <div key={stat.stat.name}>
@@ -255,7 +346,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
               <p>{stat.base_stat}</p>
             </div>
           ))}
-        </div>
+        </div> */}
         {/* <div>
         <p>Moves</p>
         {pokemonData.moves.map((move: any) => (
@@ -273,7 +364,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
           </div>
         ))}
       </div> */}
-        <div>
+        {/* <div>
           <p>Sensibility</p>
           <div className="flex">
             {sensibility.map((type: any) => (
@@ -283,9 +374,9 @@ export default async function Page({ params: { id }, searchParams }: Params) {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
-        <div className="flex gap-4 flex-wrap justify-center">
+        {/* <div className="flex gap-4 flex-wrap justify-center">
           {evolvePokemon.map((pokemon) => (
             <Card key={pokemon.frenchName} className="w-44 flex justify-center">
               <CardContent>
@@ -309,7 +400,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );
