@@ -235,11 +235,11 @@ export default async function Page({ params: { id }, searchParams }: Params) {
                 colorTypes[
                   typeFrench.name.toLowerCase() as keyof typeof colorTypes
                 ]
-              } font-bold rounded w-2/5 p-4`}
+              } font-bold rounded w-2/5 p-2`}
             >
               Nom anglais
             </p>
-            <p className="capitalize  bg-white rounded w-3/5 p-4">
+            <p className="capitalize  bg-white rounded w-3/5 p-2">
               {pokemonData.name}
             </p>
           </div>
@@ -249,21 +249,26 @@ export default async function Page({ params: { id }, searchParams }: Params) {
                 colorTypes[
                   typeFrench.name.toLowerCase() as keyof typeof colorTypes
                 ]
-              } font-bold rounded w-full p-4`}
+              } font-bold rounded w-full p-2`}
             >
               Numéros de Pokédex
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-1 w-full">
-              {informationsPokemon.pokedex_numbers.map((pokedexNumber: any) => (
-                <div key={pokedexNumber.pokedex.name} className="h-20 w-20">
-                  <div className="bg-white rounded flex flex-col items-center justify-center p-1 w-full h-full">
-                    <p className="capitalize text-blue-600 text-sm text-center">
-                      {pokedexNumber.pokedex.name.replace(/-/g, " ")}
-                    </p>
-                    <p>{pokedexNumber.entry_number}</p>
-                  </div>
-                </div>
-              ))}
+
+            <div className="bg-white p-4 rounded">
+              <div className="grid grid-cols-3 gap-2 text-center">
+                {informationsPokemon.pokedex_numbers.map(
+                  (pokedexNumber: any) => (
+                    <div key={pokedexNumber.pokedex.name}>
+                      <div>
+                        <h3 className="font-bold capitalize text-sm">
+                          {pokedexNumber.pokedex.name.replace(/-/g, " ")}
+                        </h3>
+                        <p className="text-sm">{pokedexNumber.entry_number}</p>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
             </div>
           </div>
           <div className="flex gap-0.5 w-full items-center p-1">
@@ -272,11 +277,11 @@ export default async function Page({ params: { id }, searchParams }: Params) {
                 colorTypes[
                   typeFrench.name.toLowerCase() as keyof typeof colorTypes
                 ]
-              } font-bold rounded w-2/5 p-4`}
+              } font-bold rounded w-2/5 p-2`}
             >
               Types
             </p>
-            <div className="bg-white rounded w-3/5 flex items-center justify-center p-4">
+            <div className="bg-white rounded w-3/5 flex items-center justify-center p-2">
               {pokemonData.types.map((type: any) => (
                 <div key={type.type.name}>
                   <TypePokemon url={type.type.url} />
