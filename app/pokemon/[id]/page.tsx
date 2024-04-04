@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React from "react";
 import Image from "next/image";
 import {
@@ -115,6 +116,89 @@ async function getLocationForPokemon(url: string) {
   return data;
 }
 
+async function getAbilitiesForPokemon(data: any) {
+  const abilities = await Promise.all(
+    data.map(async (ability: any) => {
+      const res = await fetch(ability.ability.url);
+      const data = await res.json();
+      const getFrenchAbility = await getFrenchName(data);
+      ability.ability.name = getFrenchAbility.name;
+      return ability;
+    })
+  );
+
+  return abilities;
+}
+
+async function getEggsForPokemon(data: any) {
+  const eggs = await Promise.all(
+    data.map(async (egg: any) => {
+      const res = await fetch(egg.url);
+      const data = await res.json();
+      const getFrenchEgg = await getFrenchName(data);
+      egg.name = getFrenchEgg.name;
+      return egg;
+    })
+  );
+  return eggs;
+}
+
+async function getPokemonGrowthRate(url: string) {
+  const res = await fetch(url);
+  const data = await res.json();
+
+  return data.levels[data.levels.length - 1].experience;
+}
+
+async function getPokemonGender(gender: number) {
+  let male;
+  let female;
+
+  switch (gender) {
+    case 0:
+      male = "100";
+      female = "0";
+      break;
+    case 1:
+      male = "87.5";
+      female = "12.5";
+      break;
+    case 2:
+      male = "75";
+      female = "25";
+      break;
+    case 3:
+      male = "62.5";
+      female = "37.5";
+      break;
+    case 4:
+      male = "50";
+      female = "50";
+      break;
+    case 5:
+      male = "37.5";
+      female = "62.5";
+      break;
+    case 6:
+      male = "25";
+      female = "75";
+      break;
+    case 7:
+      male = "12.5";
+      female = "87.5";
+      break;
+    case 8:
+      male = "0";
+      female = "100";
+      break;
+    default:
+      male = "0";
+      female = "0";
+  }
+
+  return { male, female };
+}
+
 async function getEvolutionOfPokemon(url: string) {
   const res = await fetch(url);
   const data = await res.json();
@@ -188,6 +272,15 @@ export default async function Page({ params: { id }, searchParams }: Params) {
 
   const pokemonFrenchName = await getFrenchName(informationsPokemon);
   const sensibility = await calculateTypeEffectiveness(pokemonData.types);
+
+  const pokemonAbilities = await getAbilitiesForPokemon(pokemonData.abilities);
+  const pokemonEggs = await getEggsForPokemon(informationsPokemon.egg_groups);
+
+  const pokemonGrowthRate = await getPokemonGrowthRate(
+    informationsPokemon.growth_rate.url
+  );
+
+  const pokemonGender = await getPokemonGender(informationsPokemon.gender_rate);
 
   return (
     <div>
@@ -289,57 +382,202 @@ export default async function Page({ params: { id }, searchParams }: Params) {
               ))}
             </div>
           </div>
-        </div>
-        {/* 
-            <div>
-              <p>Base Experience:</p>
-              <p>{pokemonData.base_experience}</p>
-            </div>
-            <div>
-              <p>Height:</p>
-              <p>{pokemonData.height}</p>
-            </div>
-            <div>
-              <p>Weight:</p>
-              <p>{pokemonData.weight}</p>
-            </div>
-            <div>
-              <p>Abilities:</p>
-              {pokemonData.abilities.map((ability: any) => (
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-2`}
+            >
+              Catégorie
+            </p>
+            <p className="capitalize  bg-white rounded w-3/5 p-2">
+              {
+                informationsPokemon.genera.find(
+                  (gen: any) => gen.language.name === "fr"
+                ).genus
+              }
+            </p>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-2`}
+            >
+              Taille
+            </p>
+            <p className=" bg-white rounded w-3/5 p-2">
+              {pokemonData.height / 10} m
+            </p>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-2`}
+            >
+              Poids
+            </p>
+            <p className=" bg-white rounded w-3/5 p-2">
+              {pokemonData.weight / 10} kg
+            </p>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 py-4 pl-2`}
+            >
+              Talents
+            </p>
+
+            <div className="capitalize bg-white rounded w-3/5 py-1 pl-2 flex flex-col">
+              {pokemonAbilities.map((ability: any) => (
                 <div key={ability.ability.name}>
                   <p>{ability.ability.name}</p>
                 </div>
               ))}
             </div>
-            <div>
-              <p>Capture rate:</p>
-              <p>{informationsPokemon.capture_rate}</p>
-            </div>
-            <div>
-              <p>Color</p>
-              <p>{informationsPokemon.color.name}</p>
-            </div>
-            <div>
-              <p>Egg groups</p>
-              {informationsPokemon.egg_groups.map((eggGroup: any) => (
-                <div key={eggGroup.name}>
-                  <p>{eggGroup.name}</p>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-2`}
+            >
+              Groupes d'Oeuf
+            </p>
+
+            <div className="capitalize bg-white rounded w-3/5 p-2 flex flex-col">
+              {pokemonEggs.map((egg: any) => (
+                <div key={egg.name}>
+                  <p>{egg.name}</p>
                 </div>
               ))}
             </div>
-            <div>
-              <p>Growth rate</p>
-              <p>{informationsPokemon.growth_rate.name}</p>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-2`}
+            >
+              Eclosion
+            </p>
+            <p className="capitalize  bg-white rounded w-3/5 p-2">
+              {informationsPokemon.hatch_counter} cycles
+            </p>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-2`}
+            >
+              Base Exp.
+            </p>
+            <p className="capitalize  bg-white rounded w-3/5 p-2">
+              {pokemonData.base_experience} exp.
+            </p>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-2`}
+            >
+              Taux de capture
+            </p>
+            <p className="capitalize  bg-white rounded w-3/5 py-5 pl-2">
+              {informationsPokemon.capture_rate}
+            </p>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-2`}
+            >
+              Bonheur
+            </p>
+            <p className="capitalize  bg-white rounded w-3/5 p-2">
+              {informationsPokemon.base_happiness}
+            </p>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 p-2`}
+            >
+              Exp. niv.100
+            </p>
+            <p className="capitalize  bg-white rounded w-3/5 p-2">
+              {pokemonGrowthRate} exp.
+            </p>
+          </div>
+          <div className="flex gap-0.5 w-full items-center p-1">
+            <p
+              className={`${
+                colorTypes[
+                  typeFrench.name.toLowerCase() as keyof typeof colorTypes
+                ]
+              } font-bold rounded w-2/5 py-4 pl-2`}
+            >
+              Sexe
+            </p>
+            <div className="capitalize  bg-white rounded w-3/5 py-1 pl-2 flex flex-col">
+              <p className="text-pink-500 flex items-center">
+                {pokemonGender.female}%{" "}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M12 4a6 6 0 0 1 6 6c0 2.97-2.16 5.44-5 5.92V18h2v2h-2v2h-2v-2H9v-2h2v-2.08c-2.84-.48-5-2.95-5-5.92a6 6 0 0 1 6-6m0 2a4 4 0 0 0-4 4a4 4 0 0 0 4 4a4 4 0 0 0 4-4a4 4 0 0 0-4-4"
+                  />
+                </svg>
+              </p>
+              <p className="text-blue-500 flex items-center">
+                {pokemonGender.male}%{" "}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M9 9c1.29 0 2.5.41 3.47 1.11L17.58 5H13V3h8v8h-2V6.41l-5.11 5.09c.7 1 1.11 2.2 1.11 3.5a6 6 0 0 1-6 6a6 6 0 0 1-6-6a6 6 0 0 1 6-6m0 2a4 4 0 0 0-4 4a4 4 0 0 0 4 4a4 4 0 0 0 4-4a4 4 0 0 0-4-4"
+                  />
+                </svg>
+              </p>
             </div>
-            <div>
-              <p>Hatch counter</p>
-              <p>{informationsPokemon.hatch_counter}</p>
-            </div>
-            <div>
-              <p>Shape</p>
-              <p>{informationsPokemon.shape.name}</p>
-            </div>
- */}
+          </div>
+        </div>
 
         {/* <PokemonsMoves /> */}
 
