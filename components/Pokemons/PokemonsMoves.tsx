@@ -23,16 +23,17 @@ function GenerationLink({ generation }: { generation: number }) {
     </>
   );
 }
-export const PokemonsMoves = () => {
+export const PokemonsMoves = ({ moves }: { moves: any }) => {
+  console.log("moves", moves);
   return (
-    <div className="p-2" id="moves">
+    <div className="p-2 " id="moves">
       <div className="text-center font-bold">Other generations:</div>
       <div className="flex justify-center space-x-1">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((generation) => (
           <GenerationLink key={generation} generation={generation} />
         ))}
       </div>
-      {/* <PokemonsMoves generation={generation} /> */}
+      <div></div>
     </div>
   );
 };

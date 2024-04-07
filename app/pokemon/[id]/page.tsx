@@ -15,6 +15,7 @@ import { CardType } from "@/components/TypePokemon/CardType";
 import { PokemonsMoves } from "@/components/Pokemons/PokemonsMoves";
 import { Icons } from "@/components/icons";
 import { stat } from "fs";
+import { Statistiques } from "@/components/ui/Statistiques";
 
 interface Params {
   params: {
@@ -209,6 +210,8 @@ async function getStatsForPokemon({
   return pokemonStats;
 }
 
+async function getPokemonVariety(data: any) {}
+
 export default async function Page({ params: { id }, searchParams }: Params) {
   const pokemonData = await getPokemonData(id);
   const informationsPokemon = await getInformationsForPokemon(pokemonData.id);
@@ -241,7 +244,9 @@ export default async function Page({ params: { id }, searchParams }: Params) {
     pokemonStats: pokemonData.stats,
   });
 
-  // console.log("pokemonStats", pokemonStats);
+  const pokemonVarieties = await getPokemonVariety(
+    informationsPokemon.varieties
+  );
 
   return (
     <div>
@@ -517,63 +522,35 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             </div>
           </div>
         </div>
-
-        <div>
-          <p>Statistiques</p>
-          <div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Stat</th>
-                  <th>Stat de Base</th>
-                  <th>Stat Minimale</th>
-                  <th>Stat Maximale</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pokemonStats.map((stat: any, index: number) => (
-                  <tr key={index}>
-                    <td>{stat.stat.frenchName}</td>
-                    <td>{stat.base_stat}</td>
-                    <td>{stat.minStat}</td>
-                    <td>{stat.maxStat}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="w-[350px]">
+          <Statistiques stats={pokemonStats} />
+        </div>
+        <div className="flex items-center justify-center flex-col w-[350px]">
+          <PokemonsMoves moves={pokemonMoves} />
         </div>
 
-        {/* <PokemonsMoves /> */}
-
-        {/* <div>
-          <p>Stats</p>
-          {pokemonData.stats.map((stat: any) => (
-            <div key={stat.stat.name}>
-              <p>{stat.stat.name}</p>
-              <p>{stat.base_stat}</p>
-            </div>
-          ))}
-        </div> */}
-        {/* <div>
-        <p>Moves</p>
-        {pokemonData.moves.map((move: any) => (
-          <div key={move.move.name}>
-            <p>{move.move.name}</p>
-          </div>
-        ))}
-      </div> */}
-        {/* <div>
-          <p>Sensibility</p>
-          <div className="flex">
+        <div className="flex items-center justify-center flex-col w-[350px]">
+          <p>Sensibilités</p>
+          <div className="flex flex-wrap  justify-center gap-2">
             {sensibility.map((type: any) => (
-              <div key={type.type} className="">
-                <p>{type.type}</p>
+              <div
+                key={type.type}
+                className="flex flex-col justify-center items-center rounded border"
+              >
+                <div className="w-24 h-6 p-0.5">
+                  <Image
+                    src={`/assets/pokemonTypes/${type?.type.toLowerCase()}.png`}
+                    alt={type?.type}
+                    width={100}
+                    height={100}
+                    quality={100}
+                  />
+                </div>
                 <p>{type.effectiveness}</p>
               </div>
             ))}
           </div>
-        </div> */}
+        </div>
 
         {/* <div className="flex gap-4 flex-wrap justify-center">
           {evolvePokemon.map((pokemon) => (
