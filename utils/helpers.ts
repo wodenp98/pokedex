@@ -61,27 +61,6 @@ export async function getFrenchSecondType(url: string) {
   return nameFrench;
 }
 
-export const colorTypes = {
-  feu: "bg-red-500",
-  eau: "bg-blue-500",
-  plante: "bg-green-500",
-  électrik: "bg-yellow-500",
-  sol: "bg-yellow-950",
-  roche: "bg-gray-500",
-  fée: "bg-pink-500",
-  poison: "bg-purple-500",
-  insecte: "bg-green-500",
-  dragon: "bg-purple-500",
-  psy: "bg-pink-500",
-  vol: "bg-blue-500",
-  combat: "bg-red-500",
-  normal: "bg-gray-500",
-  spectre: "bg-purple-500",
-  glace: "bg-blue-500",
-  ténèbres: "bg-slate-950",
-  acier: "bg-gray-500",
-};
-
 export const typeChart = [
   {
     name: "normal",
@@ -356,3 +335,45 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
 
   return filteredMoves;
 }
+
+export const colorTypes = {
+  feu: "bg-[#E72324]",
+  eau: "bg-[#2481EF]",
+  plante: "bg-[#3da224]",
+  électrik: "bg-[#FAC100]",
+  sol: "bg-[#92501B]",
+  roche: "bg-[#b0aa82]",
+  fée: "bg-[#EF70EF]",
+  poison: "bg-[#923FCC]",
+  insecte: "bg-[#92A212]",
+  dragon: "bg-[#4F60E2]",
+  psy: "bg-[#ef3f7a]",
+  vol: "bg-[#82BAEF]",
+  combat: "bg-[#FF8100]",
+  normal: "bg-[#A0A2A0]",
+  spectre: "bg-[#703F70]",
+  glace: "bg-[#3DD9FF]",
+  ténèbres: "bg-[#4F3F3D]",
+  acier: "bg-[#60A2B9]",
+};
+
+export const backgroundColorTypes = {
+  feu: "bg-[#FDDCD5]",
+  eau: "bg-[#D7EBFF]",
+  plante: "bg-[#E4F5DC]",
+  électrik: "bg-[#FFF3D5]",
+  sol: "bg-[#F6F0DE]",
+  roche: "bg-[#F1EDDE]",
+  fée: "bg-[#F8EAF9]",
+  poison: "bg-[#F0DEED]",
+  insecte: "bg-[#EEF1D2]",
+  dragon: "bg-[#E7DDFD]",
+  psy: "bg-[#FFE3ED]",
+  vol: "bg-[#EBEEFD]",
+  combat: "bg-[#FFEDDD]",
+  normal: "bg-[#EEEDE9]",
+  spectre: "bg-[#F7E1F7]",
+  glace: "bg-[#DEF5FA]",
+  ténèbres: "bg-[#E3DEDA]",
+  acier: "bg-[#EEEEF3]",
+};

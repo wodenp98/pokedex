@@ -3,7 +3,9 @@ import React from "react";
 import Image from "next/image";
 import { TypePokemon } from "@/components/TypePokemon/TypePokemon";
 import {
+  backgroundColorTypes,
   calculateTypeEffectiveness,
+  colorTypes,
   getFrenchFirstType,
   getFrenchName,
   getMovesByGeneration,
@@ -12,6 +14,7 @@ import {
 import { CardType } from "@/components/TypePokemon/CardType";
 import { PokemonsMoves } from "@/components/Pokemons/PokemonsMoves";
 import { Icons } from "@/components/icons";
+import { stat } from "fs";
 
 interface Params {
   params: {
@@ -19,48 +22,6 @@ interface Params {
   };
   searchParams?: Record<string, string>;
 }
-
-const backgroundColorTypes = {
-  feu: "bg-[#FDDCD5]",
-  eau: "bg-[#D7EBFF]",
-  plante: "bg-[#E4F5DC]",
-  électrik: "bg-[#FFF3D5]",
-  sol: "bg-[#F6F0DE]",
-  roche: "bg-[#F1EDDE]",
-  fée: "bg-[#F8EAF9]",
-  poison: "bg-[#F0DEED]",
-  insecte: "bg-[#EEF1D2]",
-  dragon: "bg-[#E7DDFD]",
-  psy: "bg-[#FFE3ED]",
-  vol: "bg-[#EBEEFD]",
-  combat: "bg-[#FFEDDD]",
-  normal: "bg-[#EEEDE9]",
-  spectre: "bg-[#F7E1F7]",
-  glace: "bg-[#DEF5FA]",
-  ténèbres: "bg-[#E3DEDA]",
-  acier: "bg-[#EEEEF3]",
-};
-
-const colorTypes = {
-  feu: "bg-[#E72324]",
-  eau: "bg-[#2481EF]",
-  plante: "bg-[#3da224]",
-  électrik: "bg-[#FAC100]",
-  sol: "bg-[#92501B]",
-  roche: "bg-[#b0aa82]",
-  fée: "bg-[#EF70EF]",
-  poison: "bg-[#923FCC]",
-  insecte: "bg-[#92A212]",
-  dragon: "bg-[#4F60E2]",
-  psy: "bg-[#ef3f7a]",
-  vol: "bg-[#82BAEF]",
-  combat: "bg-[#FF8100]",
-  normal: "bg-[#A0A2A0]",
-  spectre: "bg-[#703F70]",
-  glace: "bg-[#3DD9FF]",
-  ténèbres: "bg-[#4F3F3D]",
-  acier: "bg-[#60A2B9]",
-};
 
 async function getPokemonData(id: number) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -72,38 +33,6 @@ async function getPokemonData(id: number) {
 async function getInformationsForPokemon(id: number) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}/`);
   const data = await res.json();
-
-  return data;
-}
-
-async function getLocationForPokemon(url: string) {
-  const res = await fetch(url);
-  const data = await res.json();
-
-  for (const location of data) {
-    const res = await fetch(location.location_area.url);
-    const data = await res.json();
-
-    const resLocation = await fetch(data.location.url);
-    const dataLocation = await resLocation.json();
-
-    const getLocationInFrench = await getFrenchName(dataLocation);
-
-    location.location_area.name = getLocationInFrench.name;
-
-    const versions = await Promise.all(
-      location.version_details.map(async (version: any) => {
-        const res = await fetch(version.version.url);
-        const data = await res.json();
-        const getFrenchVersion = await getFrenchName(data);
-        version.version.name = getFrenchVersion.name;
-        return version;
-      })
-    );
-
-    // Replace version_details with resolved versions
-    location.version_details = versions;
-  }
 
   return data;
 }
@@ -244,6 +173,85 @@ async function getEvolutionOfPokemon(url: string) {
   return evolutionChain;
 }
 
+// async function getStatsForPokemon({
+//   pokemonId,
+//   pokemonStats,
+// }: {
+//   pokemonId: number;
+//   pokemonStats: any;
+// }) {
+//   if (pokemonId === 292) {
+//     // console.log("pokemonStats", pokemonStats[0]);
+//     pokemonStats[0].stat.frenchName = "PV";
+//     pokemonStats[0].maxStat = 1;
+//     pokemonStats[0].minStat = 1;
+//   } else {
+//     pokemonStats[0].stat.frenchName = "PV";
+//     pokemonStats[0].maxStat = Math.floor(
+//       ((2 * pokemonStats[0].base_stat + 31 + 63) * 100) / 100 + 100 + 10
+//     );
+//     pokemonStats[0].minStat = Math.floor(
+//       (2 * pokemonStats[0].base_stat * 100) / 100 + 100 + 10
+//     );
+//   }
+
+//   for (let i = 1; i < pokemonStats.length; i++) {
+//     const statName = await fetch(pokemonStats[i].stat.url);
+//     const data = await statName.json();
+
+//     const statNameInFrench = await getFrenchName(data);
+
+//     pokemonStats[i].stat.frenchName = statNameInFrench.name;
+//     pokemonStats[i].maxStat = Math.floor(
+//       Math.floor(((2 * pokemonStats[i].base_stat + 31 + 63) * 100) / 100 + 5) *
+//         1.1
+//     );
+//     pokemonStats[i].minStat = Math.floor(
+//       Math.floor((2 * pokemonStats[i].base_stat * 100) / 100 + 5) * 0.9
+//     );
+//   }
+
+//   console.log("pokemonStats", pokemonStats);
+
+//   return pokemonStats;
+// }
+
+async function getStatsForPokemon({
+  pokemonId,
+  pokemonStats,
+}: {
+  pokemonId: number;
+  pokemonStats: any;
+}) {
+  for (let i = 0; i < pokemonStats.length; i++) {
+    const isHP = i === 0;
+    const statName = await fetch(pokemonStats[i].stat.url);
+    const data = await statName.json();
+    const statNameInFrench = await getFrenchName(data);
+
+    pokemonStats[i].stat.frenchName = statNameInFrench.name;
+
+    if (pokemonId === 292 && isHP) {
+      pokemonStats[i].maxStat = 1;
+      pokemonStats[i].minStat = 1;
+    } else {
+      const base = 2 * pokemonStats[i].base_stat;
+      const addedValue = isHP ? 100 + 10 : 5;
+      const multiplier = isHP ? 1 : 0.9;
+
+      pokemonStats[i].maxStat = Math.floor(
+        Math.floor(((base + 31 + 63) * 100) / 100 + addedValue) *
+          (isHP ? 1 : 1.1)
+      );
+      pokemonStats[i].minStat = Math.floor(
+        Math.floor((base * 100) / 100 + addedValue) * multiplier
+      );
+    }
+  }
+
+  return pokemonStats;
+}
+
 export default async function Page({ params: { id }, searchParams }: Params) {
   const pokemonData = await getPokemonData(id);
   const informationsPokemon = await getInformationsForPokemon(pokemonData.id);
@@ -252,9 +260,6 @@ export default async function Page({ params: { id }, searchParams }: Params) {
 
   const evolvePokemon = await getEvolutionOfPokemon(
     informationsPokemon.evolution_chain.url
-  );
-  const locationsPokemon = await getLocationForPokemon(
-    pokemonData.location_area_encounters
   );
 
   const pokemonMoves = await getMovesByGeneration(
@@ -274,6 +279,13 @@ export default async function Page({ params: { id }, searchParams }: Params) {
 
   const pokemonGender = await getPokemonGender(informationsPokemon.gender_rate);
 
+  const pokemonStats = await getStatsForPokemon({
+    pokemonId: pokemonData.id,
+    pokemonStats: pokemonData.stats,
+  });
+
+  console.log("pokemonStats", pokemonStats);
+
   return (
     <div>
       <div className="flex flex-col items-center justify-center py-2">
@@ -284,7 +296,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             ]
           }`}
         >
-          <div className="p-1">
+          <div className="pt-1 px-1">
             {pokemonData.types.length > 1 ? (
               <CardType
                 firstTypeUrl={pokemonData.types[0].type.url}
@@ -439,7 +451,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
               ))}
             </div>
           </div>
-          <div className="flex gap-0.5 w-full items-center p-1">
+          <div className="flex gap-0.5 w-full items-stretch p-1">
             <p
               className={`${
                 colorTypes[
@@ -449,8 +461,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             >
               Groupes d'Oeuf
             </p>
-
-            <div className="capitalize bg-white rounded w-3/5 p-2 flex flex-col">
+            <div className="capitalize bg-white rounded w-3/5 p-2 flex flex-col justify-center">
               {pokemonEggs.map((egg: any) => (
                 <div key={egg.name}>
                   <p>{egg.name}</p>
@@ -566,15 +577,6 @@ export default async function Page({ params: { id }, searchParams }: Params) {
         {pokemonData.moves.map((move: any) => (
           <div key={move.move.name}>
             <p>{move.move.name}</p>
-          </div>
-        ))}
-      </div> */}
-
-        {/* <div>
-        <p>Locations</p>
-        {locationsPokemon.map((location: any) => (
-          <div key={location.location_area.name}>
-            <p>{location.location_area.name}</p>
           </div>
         ))}
       </div> */}
