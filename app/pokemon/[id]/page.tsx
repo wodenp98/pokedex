@@ -173,49 +173,6 @@ async function getEvolutionOfPokemon(url: string) {
   return evolutionChain;
 }
 
-// async function getStatsForPokemon({
-//   pokemonId,
-//   pokemonStats,
-// }: {
-//   pokemonId: number;
-//   pokemonStats: any;
-// }) {
-//   if (pokemonId === 292) {
-//     // console.log("pokemonStats", pokemonStats[0]);
-//     pokemonStats[0].stat.frenchName = "PV";
-//     pokemonStats[0].maxStat = 1;
-//     pokemonStats[0].minStat = 1;
-//   } else {
-//     pokemonStats[0].stat.frenchName = "PV";
-//     pokemonStats[0].maxStat = Math.floor(
-//       ((2 * pokemonStats[0].base_stat + 31 + 63) * 100) / 100 + 100 + 10
-//     );
-//     pokemonStats[0].minStat = Math.floor(
-//       (2 * pokemonStats[0].base_stat * 100) / 100 + 100 + 10
-//     );
-//   }
-
-//   for (let i = 1; i < pokemonStats.length; i++) {
-//     const statName = await fetch(pokemonStats[i].stat.url);
-//     const data = await statName.json();
-
-//     const statNameInFrench = await getFrenchName(data);
-
-//     pokemonStats[i].stat.frenchName = statNameInFrench.name;
-//     pokemonStats[i].maxStat = Math.floor(
-//       Math.floor(((2 * pokemonStats[i].base_stat + 31 + 63) * 100) / 100 + 5) *
-//         1.1
-//     );
-//     pokemonStats[i].minStat = Math.floor(
-//       Math.floor((2 * pokemonStats[i].base_stat * 100) / 100 + 5) * 0.9
-//     );
-//   }
-
-//   console.log("pokemonStats", pokemonStats);
-
-//   return pokemonStats;
-// }
-
 async function getStatsForPokemon({
   pokemonId,
   pokemonStats,
