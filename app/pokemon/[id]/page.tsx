@@ -241,7 +241,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
     pokemonStats: pokemonData.stats,
   });
 
-  console.log("pokemonStats", pokemonStats);
+  // console.log("pokemonStats", pokemonStats);
 
   return (
     <div>
@@ -515,6 +515,32 @@ export default async function Page({ params: { id }, searchParams }: Params) {
                 {pokemonGender.male}% <Icons.maleGender className="h-4 w-4" />
               </p>
             </div>
+          </div>
+        </div>
+
+        <div>
+          <p>Statistiques</p>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Stat</th>
+                  <th>Stat de Base</th>
+                  <th>Stat Minimale</th>
+                  <th>Stat Maximale</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pokemonStats.map((stat: any, index: number) => (
+                  <tr key={index}>
+                    <td>{stat.stat.frenchName}</td>
+                    <td>{stat.base_stat}</td>
+                    <td>{stat.minStat}</td>
+                    <td>{stat.maxStat}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 
