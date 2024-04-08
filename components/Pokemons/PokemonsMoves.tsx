@@ -1,5 +1,15 @@
 import Link from "next/link";
 import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { getFrenchName } from "@/utils/helpers";
+
 function GenerationLink({ generation }: { generation: number }) {
   const romanNumerals = [
     "I",
@@ -23,8 +33,11 @@ function GenerationLink({ generation }: { generation: number }) {
     </>
   );
 }
-export const PokemonsMoves = ({ moves }: { moves: any }) => {
-  console.log("moves", moves);
+
+export const PokemonsMoves = async ({ moves }: { moves: any }) => {
+  // moves.map((move: any) => {
+  //   console.log("❤️", move);
+  // });
   return (
     <div className="p-2 " id="moves">
       <div className="text-center font-bold">Other generations:</div>
@@ -33,7 +46,28 @@ export const PokemonsMoves = ({ moves }: { moves: any }) => {
           <GenerationLink key={generation} generation={generation} />
         ))}
       </div>
-      <div></div>
+      <div>
+        {/* <Table className="w-[350px] text-xs">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Numéro</TableHead>
+              <TableHead>Capacité</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Catégorie</TableHead>
+              <TableHead>Puissance</TableHead>
+              <TableHead>Précision</TableHead>
+              <TableHead>PP</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {moves.map((move: any) => (
+              <TableRow key={move}>
+                <TableCell>{move}</TableCell>
+                </TableRow>
+            ))}
+          </TableBody>
+        </Table> */}
+      </div>
     </div>
   );
 };

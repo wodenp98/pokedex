@@ -1,3 +1,5 @@
+import { machine } from "os";
+
 export async function getPokemons({
   limit,
   offset,
@@ -251,6 +253,12 @@ export const getFrenchName = async (data: any) => {
   return name;
 };
 
+export const getEnglishName = async (data: any) => {
+  const name = data.names.find((name: any) => name.language.name === "en");
+
+  return name;
+};
+
 const versionToGeneration = {
   "red-blue": "1",
   yellow: "1",
@@ -259,8 +267,6 @@ const versionToGeneration = {
   "ruby-sapphire": "3",
   emerald: "3",
   "firered-leafgreen": "3",
-  colosseum: "3",
-  xd: "3",
   "diamond-pearl": "4",
   platinum: "4",
   "heartgold-soulsilver": "4",
@@ -270,15 +276,10 @@ const versionToGeneration = {
   "omega-ruby-alpha-sapphire": "6",
   "sun-moon": "7",
   "ultra-sun-ultra-moon": "7",
-  "lets-go-pikachu-lets-go-eevee": "7",
   "sword-shield": "8",
-  "the-isle-of-armor": "8",
-  "the-crown-tundra": "8",
   "brilliant-diamond-and-shining-pearl": "8",
   "legend-arceus": "8",
   "scarlet-violet": "9",
-  "the-teal-mask": "9",
-  "the-indigo-disk": "9",
 };
 
 interface VersionGroupDetail {
@@ -324,15 +325,38 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
     (move) => move.version_group_details.length > 0
   );
 
+  // console.log("filteredMoves", filteredMoves[4].version_group_details);
+
   for (let move of filteredMoves) {
     const moveRes = await fetch(move.move.url);
     const data = await moveRes.json();
     const nameFrench = await getFrenchName(data);
 
-    move.move.name = nameFrench.name;
-    move.data = data;
-  }
+    const machines = data.machines.filter((machine: any) => {
+      return versionsCorrespondantes.includes(machine.version_group.name);
+    });
 
+    const nameInEnglish = await getEnglishName(data);
+
+    move.move.name =
+      nameFrench === undefined ? nameInEnglish.name : nameFrench.name;
+    move.data = data;
+
+    if (machines.length > 0) {
+      const machine = await fetch(machines[0].machine.url);
+      const machineData = await machine.json();
+
+      const item = await fetch(machineData.item.url);
+      const itemData = await item.json();
+
+      const itemFrenchName = await getFrenchName(itemData);
+
+      move.data.machines = {
+        name: itemFrenchName.name,
+        machines: machines,
+      };
+    }
+  }
   return filteredMoves;
 }
 

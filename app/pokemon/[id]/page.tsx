@@ -210,7 +210,7 @@ async function getStatsForPokemon({
   return pokemonStats;
 }
 
-async function getPokemonVariety(data: any) {}
+// varieties
 
 export default async function Page({ params: { id }, searchParams }: Params) {
   const pokemonData = await getPokemonData(id);
@@ -243,10 +243,6 @@ export default async function Page({ params: { id }, searchParams }: Params) {
     pokemonId: pokemonData.id,
     pokemonStats: pokemonData.stats,
   });
-
-  const pokemonVarieties = await getPokemonVariety(
-    informationsPokemon.varieties
-  );
 
   return (
     <div>
