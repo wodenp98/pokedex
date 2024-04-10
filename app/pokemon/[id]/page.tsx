@@ -16,6 +16,8 @@ import { PokemonsMoves } from "@/components/Pokemons/PokemonsMoves";
 import { Icons } from "@/components/icons";
 import { stat } from "fs";
 import { Statistiques } from "@/components/ui/Statistiques";
+import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "lucide-react";
 
 interface Params {
   params: {
@@ -548,7 +550,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
           </div>
         </div>
 
-        {/* <div className="flex gap-4 flex-wrap justify-center">
+        <div className="flex gap-4 flex-wrap justify-center">
           {evolvePokemon.map((pokemon) => (
             <Card key={pokemon.frenchName} className="w-44 flex justify-center">
               <CardContent>
@@ -572,7 +574,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
               </CardContent>
             </Card>
           ))}
-        </div> */}
+        </div>
       </div>
     </div>
   );

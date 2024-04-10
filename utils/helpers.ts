@@ -334,15 +334,16 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
       return versionsCorrespondantes.includes(machine.version_group.name);
     });
 
-    const moveLevelLearnedAt: VersionGroupDetail[] =
-      move.version_group_details.filter(
+    const moveLevelLearnedAt: VersionGroupDetail[] = move.version_group_details
+      .filter(
         (item: VersionGroupDetail, index: number, self: VersionGroupDetail[]) =>
           index ===
           self.findIndex(
             (t: VersionGroupDetail) =>
               t.level_learned_at === item.level_learned_at
           )
-      );
+      )
+      .filter((detail) => detail.level_learned_at > 0);
 
     const nameInEnglish = await getEnglishName(data);
 

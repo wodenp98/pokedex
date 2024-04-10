@@ -46,11 +46,20 @@ function GenerationLink({ generation }: { generation: number }) {
 }
 
 export const PokemonsMoves = async ({ moves }: { moves: any }) => {
-  const movesLearnedByLevel = moves.filter((move: any) => {
-    return move.version_group_details.some(
-      (detail: any) => detail.level_learned_at !== 0
-    );
-  });
+  const movesLearnedByLevel = moves
+    .filter((move: any) => {
+      return move.version_group_details.some(
+        (detail: any) => detail.level_learned_at !== 0
+      );
+    })
+    .sort((a: any, b: any) => {
+      return (
+        a.version_group_details[a.version_group_details.length - 1]
+          .level_learned_at -
+        b.version_group_details[b.version_group_details.length - 1]
+          .level_learned_at
+      );
+    });
 
   const movesLearnedWithMachines = moves.filter((move: any) => {
     return move.data.machines.length > 0;
@@ -65,12 +74,35 @@ export const PokemonsMoves = async ({ moves }: { moves: any }) => {
         ))}
       </div>
       <div>
-        <Tabs defaultValue="account" className="w-[400px]">
+        <h1>Capacités apprises</h1>
+        <Tabs defaultValue="level" className="w-[400px]">
           <TabsList>
-            <TabsTrigger value="account">Account</TabsTrigger>
-            <TabsTrigger value="password">Password</TabsTrigger>
+            <TabsTrigger value="level">Par montée en niveau</TabsTrigger>
+            <TabsTrigger value="machines">Par CT / CS</TabsTrigger>
           </TabsList>
-          <TabsContent value="account">
+          <TabsContent value="level">
+            <Table className="w-[350px] text-xs">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nom</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Catégorie</TableHead>
+                  <TableHead>Puissance</TableHead>
+                  <TableHead>Précision</TableHead>
+                  <TableHead>PP</TableHead>
+                  <TableHead>Niveau</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {movesLearnedByLevel.map((move: any) => (
+                  <TableRow key={move.move.name}>
+                    <TableCell>{move.move.name}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TabsContent>
+          <TabsContent value="machines">
             <Table className="w-[350px] text-xs">
               <TableHeader>
                 <TableRow>
@@ -83,16 +115,9 @@ export const PokemonsMoves = async ({ moves }: { moves: any }) => {
                   <TableHead>PP</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {/* {moves.map((move: any) => (
-                  <TableRow key={move.move.name}>
-                    <TableCell></TableCell>
-                  </TableRow>
-                ))} */}
-              </TableBody>
+              <TableBody></TableBody>
             </Table>
           </TabsContent>
-          <TabsContent value="password">Change your password here.</TabsContent>
         </Tabs>
       </div>
     </div>
