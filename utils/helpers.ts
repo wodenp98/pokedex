@@ -325,38 +325,58 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
     (move) => move.version_group_details.length > 0
   );
 
-  // console.log("filteredMoves", filteredMoves[4].version_group_details);
-
   for (let move of filteredMoves) {
     const moveRes = await fetch(move.move.url);
     const data = await moveRes.json();
     const nameFrench = await getFrenchName(data);
 
-    const machines = data.machines.filter((machine: any) => {
+    const filteredMachines = data.machines.filter((machine: any) => {
       return versionsCorrespondantes.includes(machine.version_group.name);
     });
 
+    const moveLevelLearnedAt: VersionGroupDetail[] =
+      move.version_group_details.filter(
+        (item: VersionGroupDetail, index: number, self: VersionGroupDetail[]) =>
+          index ===
+          self.findIndex(
+            (t: VersionGroupDetail) =>
+              t.level_learned_at === item.level_learned_at
+          )
+      );
+
     const nameInEnglish = await getEnglishName(data);
+
+    move.version_group_details = moveLevelLearnedAt;
 
     move.move.name =
       nameFrench === undefined ? nameInEnglish.name : nameFrench.name;
-    move.data = data;
+    move.data = {
+      ...data,
+      machines: filteredMachines,
+    };
 
-    if (machines.length > 0) {
-      const machine = await fetch(machines[0].machine.url);
-      const machineData = await machine.json();
+    if (move.data.machines.length > 0) {
+      const test = await Promise.all(
+        move.data.machines.map(async (machine: any) => {
+          const machineRes = await fetch(machine.machine.url);
+          const machineData = await machineRes.json();
 
-      const item = await fetch(machineData.item.url);
-      const itemData = await item.json();
+          console.log("❤️", machineData);
+        })
+      );
 
-      const itemFrenchName = await getFrenchName(itemData);
-
-      move.data.machines = {
-        name: itemFrenchName.name,
-        machines: machines,
-      };
+      // ou map chaque machines
+      // const machine = await fetch(newData.machines[0].machine.url);
+      // const machineData = await machine.json();
+      // const item = await fetch(machineData.item.url);
+      // const itemData = await item.json();
+      // const itemFrenchName = await getFrenchName(itemData);
+      // move.data.machines = {
+      //   name: itemFrenchName.name,
+      // };
     }
   }
+
   return filteredMoves;
 }
 

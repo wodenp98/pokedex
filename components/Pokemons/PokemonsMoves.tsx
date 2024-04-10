@@ -46,9 +46,12 @@ function GenerationLink({ generation }: { generation: number }) {
 }
 
 export const PokemonsMoves = async ({ moves }: { moves: any }) => {
-  // moves.map((move: any) => {
-  //   console.log("❤️", move);
-  // });
+  // const movesLearnedWithMachines = moves.filter(
+  //   (move: any) => move.data.machines.length > 0
+  // );
+
+  // console.log(moves);
+
   return (
     <div className="p-2 " id="moves">
       <div className="text-center font-bold">Other generations:</div>
@@ -58,33 +61,32 @@ export const PokemonsMoves = async ({ moves }: { moves: any }) => {
         ))}
       </div>
       <div>
-        {/* <Table className="w-[350px] text-xs">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Numéro</TableHead>
-              <TableHead>Capacité</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Catégorie</TableHead>
-              <TableHead>Puissance</TableHead>
-              <TableHead>Précision</TableHead>
-              <TableHead>PP</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {moves.map((move: any) => (
-              <TableRow key={move}>
-                <TableCell>{move}</TableCell>
-                </TableRow>
-            ))}
-          </TableBody>
-        </Table> */}
         <Tabs defaultValue="account" className="w-[400px]">
           <TabsList>
             <TabsTrigger value="account">Account</TabsTrigger>
             <TabsTrigger value="password">Password</TabsTrigger>
           </TabsList>
           <TabsContent value="account">
-            Make changes to your account here.
+            <Table className="w-[350px] text-xs">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Numéro</TableHead>
+                  <TableHead>Capacité</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Catégorie</TableHead>
+                  <TableHead>Puissance</TableHead>
+                  <TableHead>Précision</TableHead>
+                  <TableHead>PP</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {/* {moves.map((move: any) => (
+                  <TableRow key={move.move.name}>
+                    <TableCell></TableCell>
+                  </TableRow>
+                ))} */}
+              </TableBody>
+            </Table>
           </TabsContent>
           <TabsContent value="password">Change your password here.</TabsContent>
         </Tabs>
