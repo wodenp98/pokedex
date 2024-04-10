@@ -356,24 +356,17 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
     };
 
     if (move.data.machines.length > 0) {
-      const test = await Promise.all(
+      await Promise.all(
         move.data.machines.map(async (machine: any) => {
           const machineRes = await fetch(machine.machine.url);
           const machineData = await machineRes.json();
+          const item = await fetch(machineData.item.url);
+          const itemData = await item.json();
+          const itemFrenchName = await getFrenchName(itemData);
 
-          console.log("❤️", machineData);
+          move.data.machines.name = itemFrenchName.name;
         })
       );
-
-      // ou map chaque machines
-      // const machine = await fetch(newData.machines[0].machine.url);
-      // const machineData = await machine.json();
-      // const item = await fetch(machineData.item.url);
-      // const itemData = await item.json();
-      // const itemFrenchName = await getFrenchName(itemData);
-      // move.data.machines = {
-      //   name: itemFrenchName.name,
-      // };
     }
   }
 

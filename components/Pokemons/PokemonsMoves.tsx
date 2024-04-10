@@ -46,11 +46,15 @@ function GenerationLink({ generation }: { generation: number }) {
 }
 
 export const PokemonsMoves = async ({ moves }: { moves: any }) => {
-  // const movesLearnedWithMachines = moves.filter(
-  //   (move: any) => move.data.machines.length > 0
-  // );
+  const movesLearnedByLevel = moves.filter((move: any) => {
+    return move.version_group_details.some(
+      (detail: any) => detail.level_learned_at !== 0
+    );
+  });
 
-  // console.log(moves);
+  const movesLearnedWithMachines = moves.filter((move: any) => {
+    return move.data.machines.length > 0;
+  });
 
   return (
     <div className="p-2 " id="moves">
