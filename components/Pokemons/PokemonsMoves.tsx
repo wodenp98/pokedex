@@ -70,17 +70,6 @@ export const PokemonsMoves = async ({
 
   const versions = getVersion(generation);
 
-  // const movesWithLevels = movesLearnedByLevel.map((move) => {
-  //   const levelsByVersion = move.version_group_details.reduce((acc, detail) => {
-  //     console.log("detail", detail);
-  //     acc[detail.version_group.name] = detail.level_learned_at;
-  //     return acc;
-  //   }, {});
-  //   return { move, levelsByVersion };
-  // });
-
-  // console.log("moves", movesWithLevels);
-
   const firstLetters = versions.map((version: any) => {
     const splitVersion = version.split("-");
     const firstLetters = splitVersion.map((element: string) =>
@@ -136,7 +125,6 @@ export const PokemonsMoves = async ({
                       <TableCell>{move.data.accuracy}</TableCell>
                       <TableCell>{move.data.pp}</TableCell>
                       {versions.map((version) => {
-                        // Find the details for this version
                         const versionDetails =
                           move.version_group_details.filter(
                             (details: any) =>
@@ -145,8 +133,7 @@ export const PokemonsMoves = async ({
 
                         const levels = versionDetails
                           .map((detail: any) => detail.level_learned_at)
-                          .join(", ");
-                        // If details exist, return the level learned at. Otherwise, return a placeholder
+                          .join(" - ");
                         return (
                           <TableCell key={version}>{levels || "N/A"}</TableCell>
                         );

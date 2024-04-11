@@ -279,7 +279,6 @@ const versionToGeneration = {
   "sword-shield": "8",
   "brilliant-diamond-and-shining-pearl": "8",
   "scarlet-violet": "9",
-  "the-indigo-disk": "9",
 };
 
 interface VersionGroupDetail {

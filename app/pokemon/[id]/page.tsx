@@ -555,8 +555,8 @@ export default async function Page({ params: { id }, searchParams }: Params) {
 
         <div className="flex gap-4 flex-wrap justify-center">
           {evolvePokemon.map((pokemon) => (
-            <Card key={pokemon.frenchName} className="w-44 flex justify-center">
-              <CardContent>
+            <div key={pokemon.frenchName} className="w-44 flex justify-center">
+              <div>
                 <Link href={`/pokemon/${pokemon.id}`}>
                   <div className="w-full rounded-lg overflow-hidden">
                     <Image
@@ -574,8 +574,8 @@ export default async function Page({ params: { id }, searchParams }: Params) {
                   </h1>
                   <p>{pokemon.evolves?.min_level ?? ""}</p>
                 </Link>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       </div>
