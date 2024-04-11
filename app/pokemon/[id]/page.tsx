@@ -17,7 +17,7 @@ import { Icons } from "@/components/icons";
 import { stat } from "fs";
 import { Statistiques } from "@/components/ui/Statistiques";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "lucide-react";
+import Link from "next/link";
 
 interface Params {
   params: {
@@ -524,7 +524,10 @@ export default async function Page({ params: { id }, searchParams }: Params) {
           <Statistiques stats={pokemonStats} />
         </div>
         <div className="flex items-center justify-center flex-col w-[350px]">
-          <PokemonsMoves moves={pokemonMoves} />
+          <PokemonsMoves
+            moves={pokemonMoves}
+            generation={searchParams?.generation || "1"}
+          />
         </div>
 
         <div className="flex items-center justify-center flex-col w-[350px]">

@@ -278,8 +278,8 @@ const versionToGeneration = {
   "ultra-sun-ultra-moon": "7",
   "sword-shield": "8",
   "brilliant-diamond-and-shining-pearl": "8",
-  "legend-arceus": "8",
   "scarlet-violet": "9",
+  "the-indigo-disk": "9",
 };
 
 interface VersionGroupDetail {
@@ -303,9 +303,8 @@ interface Move {
   data: any;
 }
 
-export async function getMovesByGeneration(moves: Move[], generation: string) {
+export function getVersion(generation: string) {
   const versionsCorrespondantes = [] as string[];
-
   Object.keys(versionToGeneration).forEach((version) => {
     if (
       versionToGeneration[version as keyof typeof versionToGeneration] ===
@@ -314,6 +313,12 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
       versionsCorrespondantes.push(version);
     }
   });
+
+  return versionsCorrespondantes;
+}
+
+export async function getMovesByGeneration(moves: Move[], generation: string) {
+  const versionsCorrespondantes = getVersion(generation);
 
   const selectedMoves = moves.map((move) => {
     const selectedDetails = move.version_group_details.filter((detail) => {
@@ -334,16 +339,12 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
       return versionsCorrespondantes.includes(machine.version_group.name);
     });
 
-    const moveLevelLearnedAt: VersionGroupDetail[] = move.version_group_details
-      .filter(
-        (item: VersionGroupDetail, index: number, self: VersionGroupDetail[]) =>
-          index ===
-          self.findIndex(
-            (t: VersionGroupDetail) =>
-              t.level_learned_at === item.level_learned_at
-          )
-      )
-      .filter((detail) => detail.level_learned_at > 0);
+    const moveLevelLearnedAt: VersionGroupDetail[] =
+      move.version_group_details.filter(
+        (detail) => detail.level_learned_at > 0
+      );
+
+    // console.log("🔥", moveLevelLearnedAt);
 
     const nameInEnglish = await getEnglishName(data);
 

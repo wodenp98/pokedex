@@ -19,7 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getFrenchName } from "@/utils/helpers";
+import { getFrenchName, getVersion } from "@/utils/helpers";
+import { version } from "os";
 
 function GenerationLink({ generation }: { generation: number }) {
   const romanNumerals = [
@@ -45,7 +46,13 @@ function GenerationLink({ generation }: { generation: number }) {
   );
 }
 
-export const PokemonsMoves = async ({ moves }: { moves: any }) => {
+export const PokemonsMoves = async ({
+  moves,
+  generation,
+}: {
+  moves: any;
+  generation: string;
+}) => {
   const movesLearnedByLevel = moves
     .filter((move: any) => {
       return move.version_group_details.some(
@@ -60,6 +67,27 @@ export const PokemonsMoves = async ({ moves }: { moves: any }) => {
           .level_learned_at
       );
     });
+
+  const versions = getVersion(generation);
+
+  // const movesWithLevels = movesLearnedByLevel.map((move) => {
+  //   const levelsByVersion = move.version_group_details.reduce((acc, detail) => {
+  //     console.log("detail", detail);
+  //     acc[detail.version_group.name] = detail.level_learned_at;
+  //     return acc;
+  //   }, {});
+  //   return { move, levelsByVersion };
+  // });
+
+  // console.log("moves", movesWithLevels);
+
+  const firstLetters = versions.map((version: any) => {
+    const splitVersion = version.split("-");
+    const firstLetters = splitVersion.map((element: string) =>
+      element.charAt(0)
+    );
+    return firstLetters.join("");
+  });
 
   const movesLearnedWithMachines = moves.filter((move: any) => {
     return move.data.machines.length > 0;
@@ -90,15 +118,42 @@ export const PokemonsMoves = async ({ moves }: { moves: any }) => {
                   <TableHead>Puissance</TableHead>
                   <TableHead>Précision</TableHead>
                   <TableHead>PP</TableHead>
-                  <TableHead>Niveau</TableHead>
+                  {firstLetters.map((version) => (
+                    <TableHead className="uppercase" key={version}>
+                      {version}
+                    </TableHead>
+                  ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {movesLearnedByLevel.map((move: any) => (
-                  <TableRow key={move.move.name}>
-                    <TableCell>{move.move.name}</TableCell>
-                  </TableRow>
-                ))}
+                {movesLearnedByLevel.map((move: any) => {
+                  return (
+                    <TableRow key={move.move.name}>
+                      <TableCell>{move.move.name}</TableCell>
+                      <TableCell>{move.data.type.name}</TableCell>
+                      <TableCell>{move.data.damage_class.name}</TableCell>
+                      <TableCell>{move.data.power}</TableCell>
+                      <TableCell>{move.data.accuracy}</TableCell>
+                      <TableCell>{move.data.pp}</TableCell>
+                      {versions.map((version) => {
+                        // Find the details for this version
+                        const versionDetails =
+                          move.version_group_details.filter(
+                            (details: any) =>
+                              details.version_group.name === version
+                          );
+
+                        const levels = versionDetails
+                          .map((detail: any) => detail.level_learned_at)
+                          .join(", ");
+                        // If details exist, return the level learned at. Otherwise, return a placeholder
+                        return (
+                          <TableCell key={version}>{levels || "N/A"}</TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TabsContent>
@@ -115,7 +170,19 @@ export const PokemonsMoves = async ({ moves }: { moves: any }) => {
                   <TableHead>PP</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody></TableBody>
+              <TableBody>
+                {movesLearnedWithMachines.map((move: any) => (
+                  <TableRow key={move.data.id}>
+                    <TableCell>{move.data.machines.name}</TableCell>
+                    <TableCell>{move.data.name}</TableCell>
+                    <TableCell>{move.data.type.name}</TableCell>
+                    <TableCell>{move.data.damage_class.name}</TableCell>
+                    <TableCell>{move.data.power}</TableCell>
+                    <TableCell>{move.data.accuracy}</TableCell>
+                    <TableCell>{move.data.pp}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
             </Table>
           </TabsContent>
         </Tabs>
