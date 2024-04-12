@@ -1,5 +1,3 @@
-import { machine } from "os";
-
 export async function getPokemons({
   limit,
   offset,
@@ -342,8 +340,6 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
       move.version_group_details.filter(
         (detail) => detail.level_learned_at > 0
       );
-
-    // console.log("🔥", moveLevelLearnedAt);
 
     const nameInEnglish = await getEnglishName(data);
 

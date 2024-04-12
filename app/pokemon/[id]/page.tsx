@@ -212,6 +212,27 @@ async function getStatsForPokemon({
   return pokemonStats;
 }
 
+const generationNumbers: { [key: string]: string } = {
+  "generation-i": "1",
+  "generation-ii": "2",
+  "generation-iii": "3",
+  "generation-iv": "4",
+  "generation-v": "5",
+  "generation-vi": "6",
+  "generation-vii": "7",
+  "generation-viii": "8",
+  "generation-ix": "9",
+};
+
+const effectivenessBackgroundColor: { [key: string]: string } = {
+  "0x": "bg-[#CCCCCC]",
+  "0.25x": "bg-[#3AF24B]",
+  "0.5x": "bg-[#AAFFAA]",
+  "1x": "bg-[#FFFFAA]",
+  "2x": "bg-[#FFAAAA]",
+  "4x": "bg-[#FF5555]",
+};
+
 // varieties
 
 export default async function Page({ params: { id }, searchParams }: Params) {
@@ -226,7 +247,8 @@ export default async function Page({ params: { id }, searchParams }: Params) {
 
   const pokemonMoves = await getMovesByGeneration(
     pokemonData.moves,
-    searchParams?.generation || "1"
+    searchParams?.generation ||
+      generationNumbers[informationsPokemon.generation.name as string]
   );
 
   const pokemonFrenchName = await getFrenchName(informationsPokemon);
@@ -246,11 +268,20 @@ export default async function Page({ params: { id }, searchParams }: Params) {
     pokemonStats: pokemonData.stats,
   });
 
+  console.log("pokemonData", sensibility);
+
+  // CT ET CS DANS DEUX TABLEAUX DIFFERENTS?
+  //VOIR OU METTRE LES GENERATIONS POUR LES SWAPS
+  //VOIR COULEURS + SEPARATIONS DE TABLEAUX
+  // ET MODIFIER TOUT LES GENERATIONS EN HAUT DU LAYOUT ?
+  // Varieties?
+  //Search bar
+
   return (
     <div>
       <div className="flex flex-col items-center justify-center py-2">
         <div
-          className={`rounded-lg w-[350px]  border text-card-foreground shadow-sm ${
+          className={`rounded-lg w-[350px] border-0 ${
             backgroundColorTypes[
               typeFrench.name.toLowerCase() as keyof typeof backgroundColorTypes
             ]
@@ -520,25 +551,44 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             </div>
           </div>
         </div>
-        <div className="w-[350px]">
-          <Statistiques stats={pokemonStats} />
-        </div>
-        <div className="flex items-center justify-center flex-col w-[350px]">
-          <PokemonsMoves
-            moves={pokemonMoves}
-            generation={searchParams?.generation || "1"}
-          />
+        <div>
+          <Statistiques stats={pokemonStats} type={typeFrench.name} />
         </div>
 
-        <div className="flex items-center justify-center flex-col w-[350px]">
-          <p>Sensibilités</p>
-          <div className="flex flex-wrap  justify-center gap-2">
+        {/* <div className="flex items-center justify-center flex-col ">
+          <PokemonsMoves
+            moves={pokemonMoves}
+            generation={
+              searchParams?.generation ||
+              generationNumbers[informationsPokemon.generation.name]
+            }
+            type={typeFrench.name}
+          />
+        </div> */}
+
+        <div
+          className={`rounded-lg flex items-center justify-center p-1 flex-col ${
+            backgroundColorTypes[
+              typeFrench.name.toLowerCase() as keyof typeof backgroundColorTypes
+            ]
+          }`}
+        >
+          <p
+            className={`${
+              colorTypes[
+                typeFrench.name.toLowerCase() as keyof typeof colorTypes
+              ]
+            } font-bold rounded text-center w-full p-2`}
+          >
+            Sensibilités
+          </p>
+          <div className="grid grid-cols-6 rounded justify-center gap-0.5">
             {sensibility.map((type: any) => (
               <div
                 key={type.type}
-                className="flex flex-col justify-center items-center rounded border"
+                className="flex flex-col justify-center items-center bg-white rounded"
               >
-                <div className="w-24 h-6 p-0.5">
+                <div className="w-24 h-6 py-px">
                   <Image
                     src={`/assets/pokemonTypes/${type?.type.toLowerCase()}.png`}
                     alt={type?.type}
@@ -547,18 +597,31 @@ export default async function Page({ params: { id }, searchParams }: Params) {
                     quality={100}
                   />
                 </div>
-                <p>{type.effectiveness}</p>
+                <p
+                  className={`${
+                    effectivenessBackgroundColor[type.effectiveness]
+                  } w-full text-center rounded font-bold h-full`}
+                >
+                  {type.effectiveness}
+                </p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="flex gap-4 flex-wrap justify-center">
+        <div
+          className={`rounded-lg flex items-center py-1 justify-center flex-col ${
+            backgroundColorTypes[
+              typeFrench.name.toLowerCase() as keyof typeof backgroundColorTypes
+            ]
+          }`}
+        >
           {evolvePokemon.map((pokemon) => (
-            <div key={pokemon.frenchName} className="w-44 flex justify-center">
+            <div key={pokemon.frenchName} className="w-52 flex justify-center">
               <div>
+                <p>{pokemon.evolves?.min_level ?? ""}</p>
                 <Link href={`/pokemon/${pokemon.id}`}>
-                  <div className="w-full rounded-lg overflow-hidden">
+                  <div className="w-full rounded-lg overflow-hidden bg-white">
                     <Image
                       src={
                         pokemon.sprites.other?.["official-artwork"]
@@ -568,11 +631,10 @@ export default async function Page({ params: { id }, searchParams }: Params) {
                       width={200}
                       height={200}
                     />
+                    <h1 className="text-lg  font-bold text-center">
+                      {pokemon.frenchName}
+                    </h1>
                   </div>
-                  <h1 className="text-lg  font-bold text-center">
-                    {pokemon.frenchName}
-                  </h1>
-                  <p>{pokemon.evolves?.min_level ?? ""}</p>
                 </Link>
               </div>
             </div>

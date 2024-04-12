@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -19,8 +18,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getFrenchName, getVersion } from "@/utils/helpers";
-import { version } from "os";
+import {
+  backgroundColorTypes,
+  colorTypes,
+  getFrenchFirstType,
+  getFrenchName,
+  getVersion,
+} from "@/utils/helpers";
+import Image from "next/image";
 
 function GenerationLink({ generation }: { generation: number }) {
   const romanNumerals = [
@@ -38,7 +43,10 @@ function GenerationLink({ generation }: { generation: number }) {
 
   return (
     <>
-      <Link className="block" href={`?generation=${generation}#moves`}>
+      <Link
+        className="block text-lg font-normal"
+        href={`?generation=${generation}#moves`}
+      >
         {romanNumeral}
       </Link>
       {generation !== 9 && <span>-</span>}
@@ -49,9 +57,11 @@ function GenerationLink({ generation }: { generation: number }) {
 export const PokemonsMoves = async ({
   moves,
   generation,
+  type,
 }: {
   moves: any;
   generation: string;
+  type: string;
 }) => {
   const movesLearnedByLevel = moves
     .filter((move: any) => {
@@ -83,47 +93,81 @@ export const PokemonsMoves = async ({
   });
 
   return (
-    <div className="p-2 " id="moves">
-      <div className="text-center font-bold">Other generations:</div>
-      <div className="flex justify-center space-x-1">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((generation) => (
-          <GenerationLink key={generation} generation={generation} />
-        ))}
-      </div>
-      <div>
-        <h1>Capacités apprises</h1>
-        <Tabs defaultValue="level" className="w-[400px]">
-          <TabsList>
+    <Card
+      className={`flex flex-col items-center justify-center rounded-lg border p-1 text-card-foreground shadow-sm ${
+        backgroundColorTypes[
+          type.toLowerCase() as keyof typeof backgroundColorTypes
+        ]
+      }`}
+      id="moves"
+    >
+      <CardContent>
+        <Tabs
+          defaultValue="level"
+          className="flex items-center justify-center flex-col"
+        >
+          <TabsList className="">
             <TabsTrigger value="level">Par montée en niveau</TabsTrigger>
-            <TabsTrigger value="machines">Par CT / CS</TabsTrigger>
+            <TabsTrigger value="machines" className={`disabled:bg-black`}>
+              Par CT / CS
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="level">
-            <Table className="w-[350px] text-xs">
+            <Table
+              className={` ${
+                colorTypes[type.toLowerCase() as keyof typeof colorTypes]
+              } `}
+            >
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nom</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Catégorie</TableHead>
-                  <TableHead>Puissance</TableHead>
-                  <TableHead>Précision</TableHead>
-                  <TableHead>PP</TableHead>
+                  <TableHead className="text-black">Nom</TableHead>
+                  <TableHead className="text-black">Type</TableHead>
+                  <TableHead className="text-black">Catégorie</TableHead>
+                  <TableHead className="text-black">Puissance</TableHead>
+                  <TableHead className="text-black">Précision</TableHead>
+                  <TableHead className="text-black">PP</TableHead>
                   {firstLetters.map((version) => (
-                    <TableHead className="uppercase" key={version}>
+                    <TableHead
+                      className="uppercase text-center text-black"
+                      key={version}
+                    >
                       {version}
                     </TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {movesLearnedByLevel.map((move: any) => {
+              <TableBody className="bg-white">
+                {movesLearnedByLevel.map(async (move: any) => {
+                  const moveName = await getFrenchFirstType(move.data.type.url);
                   return (
                     <TableRow key={move.move.name}>
                       <TableCell>{move.move.name}</TableCell>
-                      <TableCell>{move.data.type.name}</TableCell>
-                      <TableCell>{move.data.damage_class.name}</TableCell>
-                      <TableCell>{move.data.power}</TableCell>
-                      <TableCell>{move.data.accuracy}</TableCell>
-                      <TableCell>{move.data.pp}</TableCell>
+                      <TableCell className="w-16 h-6 p-0.5">
+                        <Image
+                          src={`/assets/pokemonTypes/${moveName.name.toLowerCase()}.png`}
+                          alt={moveName.name}
+                          width={100}
+                          height={100}
+                          quality={100}
+                        />
+                      </TableCell>
+                      <TableCell className="flex justify-center">
+                        <Image
+                          src={`/assets/pokemonStatus/${move.data.damage_class.name}.png`}
+                          alt={move.data.damage_class.name}
+                          width={50}
+                          height={50}
+                        />
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {move.data.power ? move.data.power : "—"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {move.data.accuracy ? move.data.accuracy : "—"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {move.data.pp}
+                      </TableCell>
                       {versions.map((version) => {
                         const versionDetails =
                           move.version_group_details.filter(
@@ -135,7 +179,9 @@ export const PokemonsMoves = async ({
                           .map((detail: any) => detail.level_learned_at)
                           .join(" - ");
                         return (
-                          <TableCell key={version}>{levels || "N/A"}</TableCell>
+                          <TableCell key={version} className="text-center">
+                            {levels || "N/A"}
+                          </TableCell>
                         );
                       })}
                     </TableRow>
@@ -145,7 +191,7 @@ export const PokemonsMoves = async ({
             </Table>
           </TabsContent>
           <TabsContent value="machines">
-            <Table className="w-[350px] text-xs">
+            <Table className="">
               <TableHeader>
                 <TableRow>
                   <TableHead>Numéro</TableHead>
@@ -161,11 +207,15 @@ export const PokemonsMoves = async ({
                 {movesLearnedWithMachines.map((move: any) => (
                   <TableRow key={move.data.id}>
                     <TableCell>{move.data.machines.name}</TableCell>
-                    <TableCell>{move.data.name}</TableCell>
+                    <TableCell>{move.move.name}</TableCell>
                     <TableCell>{move.data.type.name}</TableCell>
                     <TableCell>{move.data.damage_class.name}</TableCell>
-                    <TableCell>{move.data.power}</TableCell>
-                    <TableCell>{move.data.accuracy}</TableCell>
+                    <TableCell>
+                      {move.data.power ? move.data.power : "—"}
+                    </TableCell>
+                    <TableCell>
+                      {move.data.accuracy ? move.data.accuracy : "—"}
+                    </TableCell>
                     <TableCell>{move.data.pp}</TableCell>
                   </TableRow>
                 ))}
@@ -173,7 +223,15 @@ export const PokemonsMoves = async ({
             </Table>
           </TabsContent>
         </Tabs>
-      </div>
-    </div>
+      </CardContent>
+      <CardFooter className="p-0 w-full flex justify-end pr-4">
+        <div className="flex items-center gap-2">
+          <p className="font-bold">Génération : </p>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((generation) => (
+            <GenerationLink key={generation} generation={generation} />
+          ))}
+        </div>
+      </CardFooter>
+    </Card>
   );
 };

@@ -7,30 +7,61 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Card, CardHeader, CardContent, CardFooter, CardTitle } from "./card";
+import { backgroundColorTypes, colorTypes } from "@/utils/helpers";
 
-export const Statistiques = (stats: any) => {
+export const Statistiques = ({ stats, type }: { stats: any; type: any }) => {
   return (
-    <Table className="w-[350px] text-xs">
-      <TableHeader>
-        <TableRow>
-          <TableHead>Statistique</TableHead>
-          <TableHead>Statistique de base</TableHead>
-          <TableHead>Min (lvl100)</TableHead>
-          <TableHead className="text-right">Max (lvl100)</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {stats.stats.map((stats: any) => (
-          <TableRow key={stats.stat.frenchName}>
-            <TableCell className="font-medium">
-              {stats.stat.frenchName}
-            </TableCell>
-            <TableCell>{stats.base_stat}</TableCell>
-            <TableCell>{stats.minStat}</TableCell>
-            <TableCell className="text-right">{stats.maxStat}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <Card
+      className={`rounded-lg border-0 ${
+        backgroundColorTypes[
+          type.toLowerCase() as keyof typeof backgroundColorTypes
+        ]
+      }`}
+    >
+      <CardContent className="p-1">
+        <Table className="rounded-md">
+          <TableHeader>
+            <TableRow
+              className={`${
+                colorTypes[type.toLowerCase() as keyof typeof colorTypes]
+              } 
+              `}
+            >
+              <TableHead className="font-bold text-black">
+                Statistique
+              </TableHead>
+              <TableHead className="font-bold text-black">
+                Statistique de base
+              </TableHead>
+              <TableHead className="font-bold text-black">
+                Min (lvl100)
+              </TableHead>
+              <TableHead className="font-bold text-black">
+                Max (lvl100)
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {stats.map((stats: any) => (
+              <TableRow key={stats.stat.frenchName}>
+                <TableCell className="font-medium bg-white ">
+                  {stats.stat.frenchName}
+                </TableCell>
+                <TableCell className="text-center bg-white ">
+                  {stats.base_stat}
+                </TableCell>
+                <TableCell className="text-center bg-white ">
+                  {stats.minStat}
+                </TableCell>
+                <TableCell className="text-center bg-white ">
+                  {stats.maxStat}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 };
