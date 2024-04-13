@@ -343,12 +343,15 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
 
     const nameInEnglish = await getEnglishName(data);
 
+    const typeMoveInFrench = await getFrenchFirstType(data.type.url);
+
     move.version_group_details = moveLevelLearnedAt;
 
     move.move.name =
       nameFrench === undefined ? nameInEnglish.name : nameFrench.name;
     move.data = {
       ...data,
+      type: typeMoveInFrench.name,
       machines: filteredMachines,
     };
 

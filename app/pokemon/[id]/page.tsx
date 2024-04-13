@@ -12,12 +12,14 @@ import {
   typeChart,
 } from "@/utils/helpers";
 import { CardType } from "@/components/TypePokemon/CardType";
-import { PokemonsMoves } from "@/components/Pokemons/PokemonsMoves";
 import { Icons } from "@/components/icons";
 import { stat } from "fs";
 import { Statistiques } from "@/components/ui/Statistiques";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { PokemonCs } from "@/components/Pokemons/PokemonCs";
+import { PokemonCt } from "@/components/Pokemons/PokemonCt";
+import { GenerationsNumber } from "@/components/Pokemons/GenerationsNumber";
 
 interface Params {
   params: {
@@ -268,14 +270,12 @@ export default async function Page({ params: { id }, searchParams }: Params) {
     pokemonStats: pokemonData.stats,
   });
 
-  console.log("pokemonData", sensibility);
-
-  // CT ET CS DANS DEUX TABLEAUX DIFFERENTS?
   //VOIR OU METTRE LES GENERATIONS POUR LES SWAPS
   //VOIR COULEURS + SEPARATIONS DE TABLEAUX
-  // ET MODIFIER TOUT LES GENERATIONS EN HAUT DU LAYOUT ?
-  // Varieties?
+  //ET MODIFIER TOUT LES GENERATIONS EN HAUT DU LAYOUT ?
+  //Varieties?
   //Search bar
+  //Repartir le code en composant
 
   return (
     <div>
@@ -555,8 +555,10 @@ export default async function Page({ params: { id }, searchParams }: Params) {
           <Statistiques stats={pokemonStats} type={typeFrench.name} />
         </div>
 
-        {/* <div className="flex items-center justify-center flex-col ">
-          <PokemonsMoves
+        <GenerationsNumber />
+
+        <div className="flex items-center justify-center flex-col ">
+          <PokemonCs
             moves={pokemonMoves}
             generation={
               searchParams?.generation ||
@@ -564,7 +566,8 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             }
             type={typeFrench.name}
           />
-        </div> */}
+          <PokemonCt moves={pokemonMoves} type={typeFrench.name} />
+        </div>
 
         <div
           className={`rounded-lg flex items-center justify-center p-1 flex-col ${
