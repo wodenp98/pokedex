@@ -6,6 +6,7 @@ import {
   backgroundColorTypes,
   calculateTypeEffectiveness,
   colorTypes,
+  getEvolutionOfPokemon,
   getFrenchFirstType,
   getFrenchName,
   getMovesByGeneration,
@@ -28,14 +29,15 @@ interface Params {
   searchParams?: Record<string, string>;
 }
 
-async function getPokemonData(id: number) {
+export async function getPokemonData(id: number | string) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+
   const data = await res.json();
 
   return data;
 }
 
-async function getInformationsForPokemon(id: number) {
+export async function getInformationsForPokemon(id: number) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}/`);
   const data = await res.json();
 
@@ -123,59 +125,6 @@ async function getPokemonGender(gender: number) {
   }
 
   return { male, female };
-}
-
-async function getEvolutionOfPokemon(url: string) {
-  const res = await fetch(url);
-  const data = await res.json();
-  const evolutionChain = [];
-
-  if (data.id === 67) {
-    let currentStage = data.chain;
-
-    const dataEvee = await getPokemonData(currentStage.species.name);
-    const dataEveeSpecies = await getInformationsForPokemon(dataEvee.id);
-
-    const dataEveeFrenchName = await getFrenchName(dataEveeSpecies);
-    evolutionChain.push({
-      ...dataEvee,
-      frenchName: dataEveeFrenchName.name,
-    });
-
-    for (let i = 0; i < currentStage.evolves_to.length; i++) {
-      const pokemon = await getPokemonData(
-        currentStage.evolves_to[i].species.name
-      );
-      const pokemonSpecies = await getInformationsForPokemon(pokemon.id);
-
-      const pokemonFrenchName = await getFrenchName(pokemonSpecies);
-
-      evolutionChain.push({
-        ...pokemon,
-        frenchName: pokemonFrenchName.name,
-        evolves: currentStage.evolves_to[i].evolution_details,
-      });
-    }
-  } else {
-    let currentStage = data.chain;
-
-    while (currentStage) {
-      const pokemon = await getPokemonData(currentStage.species.name);
-      const pokemonSpecies = await getInformationsForPokemon(pokemon.id);
-
-      const pokemonFrenchName = await getFrenchName(pokemonSpecies);
-
-      evolutionChain.push({
-        ...pokemon,
-        frenchName: pokemonFrenchName.name,
-        evolves: currentStage.evolution_details[0],
-      });
-
-      currentStage = currentStage.evolves_to[0];
-    }
-  }
-
-  return evolutionChain;
 }
 
 async function getStatsForPokemon({
@@ -270,8 +219,6 @@ export default async function Page({ params: { id }, searchParams }: Params) {
     pokemonStats: pokemonData.stats,
   });
 
-  //VOIR OU METTRE LES GENERATIONS POUR LES SWAPS
-  //VOIR COULEURS + SEPARATIONS DE TABLEAUX
   //ET MODIFIER TOUT LES GENERATIONS EN HAUT DU LAYOUT ?
   //Varieties?
   //Search bar
@@ -342,7 +289,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
               Numéros de Pokédex
             </p>
 
-            <div className="bg-white p-4 rounded">
+            <div className="bg-white w-full p-4 rounded">
               <div className="grid grid-cols-3 gap-2 text-center">
                 {informationsPokemon.pokedex_numbers.map(
                   (pokedexNumber: any) => (
@@ -423,7 +370,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
               {pokemonData.weight / 10} kg
             </p>
           </div>
-          <div className="flex gap-0.5 w-full items-center p-1">
+          <div className="flex gap-0.5 w-full items-stretch p-1">
             <p
               className={`${
                 colorTypes[
@@ -434,7 +381,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
               Talents
             </p>
 
-            <div className="capitalize bg-white rounded w-3/5 py-1 pl-2 flex flex-col">
+            <div className="capitalize bg-white rounded l w-3/5 py-1 pl-2 flex flex-col justify-center">
               {pokemonAbilities.map((ability: any) => (
                 <div key={ability.ability.name}>
                   <p>{ability.ability.name}</p>
@@ -557,7 +504,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
 
         <GenerationsNumber />
 
-        <div className="flex items-center justify-center flex-col ">
+        <div>
           <PokemonCs
             moves={pokemonMoves}
             generation={
@@ -566,6 +513,9 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             }
             type={typeFrench.name}
           />
+        </div>
+
+        <div>
           <PokemonCt moves={pokemonMoves} type={typeFrench.name} />
         </div>
 
@@ -612,37 +562,42 @@ export default async function Page({ params: { id }, searchParams }: Params) {
           </div>
         </div>
 
-        <div
+        {/* <div
           className={`rounded-lg flex items-center py-1 justify-center flex-col ${
             backgroundColorTypes[
               typeFrench.name.toLowerCase() as keyof typeof backgroundColorTypes
             ]
           }`}
         >
-          {evolvePokemon.map((pokemon) => (
-            <div key={pokemon.frenchName} className="w-52 flex justify-center">
-              <div>
-                <p>{pokemon.evolves?.min_level ?? ""}</p>
-                <Link href={`/pokemon/${pokemon.id}`}>
-                  <div className="w-full rounded-lg overflow-hidden bg-white">
-                    <Image
-                      src={
-                        pokemon.sprites.other?.["official-artwork"]
-                          ?.front_default
-                      }
-                      alt={pokemon.frenchName}
-                      width={200}
-                      height={200}
-                    />
-                    <h1 className="text-lg  font-bold text-center">
-                      {pokemon.frenchName}
-                    </h1>
-                  </div>
-                </Link>
+          {evolvePokemon.map((pokemon) => {
+            return (
+              <div
+                key={pokemon.frenchName}
+                className="w-52 flex justify-center"
+              >
+                <div>
+                  <p>{pokemon.evolves?.min_level ?? ""}</p>
+                  <Link href={`/pokemon/${pokemon.id}`}>
+                    <div className="w-full rounded-lg overflow-hidden bg-white">
+                      <Image
+                        src={
+                          pokemon.sprites.other?.["official-artwork"]
+                            ?.front_default
+                        }
+                        alt={pokemon.frenchName}
+                        width={200}
+                        height={200}
+                      />
+                      <h1 className="text-lg  font-bold text-center">
+                        {pokemon.frenchName}
+                      </h1>
+                    </div>
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            );
+          })}
+        </div> */}
       </div>
     </div>
   );

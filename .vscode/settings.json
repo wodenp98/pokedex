@@ -1,4 +1,5 @@
 {
   "continue.telemetryEnabled": false,
-  "continue.enableTabAutocomplete": false
+  "continue.enableTabAutocomplete": true,
+  "continue.remoteConfigServerUrl": ""
 }

@@ -1,4 +1,8 @@
-import { getVersion, getFrenchFirstType } from "@/utils/helpers";
+import {
+  getVersion,
+  getFrenchFirstType,
+  backgroundColorTypes,
+} from "@/utils/helpers";
 
 import React from "react";
 import { colorTypes } from "../colors";
@@ -11,6 +15,7 @@ import {
   TableCell,
 } from "../ui/table";
 import Image from "next/image";
+import { Card, CardContent } from "../ui/card";
 
 export const PokemonCs = ({
   moves,
@@ -46,76 +51,87 @@ export const PokemonCs = ({
     return firstLetters.join("");
   });
   return (
-    <Table
-      className={` ${
-        colorTypes[type.toLowerCase() as keyof typeof colorTypes]
-      } `}
+    <Card
+      className={`rounded-lg border-0 ${
+        backgroundColorTypes[
+          type.toLowerCase() as keyof typeof backgroundColorTypes
+        ]
+      }`}
     >
-      <TableHeader>
-        <TableRow>
-          <TableHead className="text-black">Nom</TableHead>
-          <TableHead className="text-black">Type</TableHead>
-          <TableHead className="text-black">Catégorie</TableHead>
-          <TableHead className="text-black">Puissance</TableHead>
-          <TableHead className="text-black">Précision</TableHead>
-          <TableHead className="text-black">PP</TableHead>
-          {firstLetters.map((version) => (
-            <TableHead
-              className="uppercase text-center text-black"
-              key={version}
+      <CardContent className="p-1">
+        <Table className="rounded-md">
+          <TableHeader>
+            <TableRow
+              className={`${
+                colorTypes[type.toLowerCase() as keyof typeof colorTypes]
+              } 
+              `}
             >
-              {version}
-            </TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody className="bg-white">
-        {movesLearnedByLevel.map((move: any) => {
-          return (
-            <TableRow key={move.move.name}>
-              <TableCell>{move.move.name}</TableCell>
-              <TableCell className="w-16 h-6 p-0.5">
-                <Image
-                  src={`/assets/pokemonTypes/${move.data.type.toLowerCase()}.png`}
-                  alt={move.data.type}
-                  width={100}
-                  height={100}
-                  quality={100}
-                />
-              </TableCell>
-              <TableCell className="flex justify-center">
-                <Image
-                  src={`/assets/pokemonStatus/${move.data.damage_class.name}.png`}
-                  alt={move.data.damage_class.name}
-                  width={50}
-                  height={50}
-                />
-              </TableCell>
-              <TableCell className="text-center">
-                {move.data.power ? move.data.power : "—"}
-              </TableCell>
-              <TableCell className="text-center">
-                {move.data.accuracy ? move.data.accuracy : "—"}
-              </TableCell>
-              <TableCell className="text-center">{move.data.pp}</TableCell>
-              {versions.map((version) => {
-                const versionDetails = move.version_group_details.filter(
-                  (details: any) => details.version_group.name === version
-                );
-
-                const levels = versionDetails
-                  .map((detail: any) => detail.level_learned_at)
-                  .join(" - ");
-                return (
-                  <TableCell key={version} className="text-center">
-                    {levels || "N/A"}
-                  </TableCell>
-                );
-              })}
+              <TableHead className="text-black font-bold">Nom</TableHead>
+              <TableHead className="text-black font-bold">Type</TableHead>
+              <TableHead className="text-black font-bold">Catégorie</TableHead>
+              <TableHead className="text-black font-bold">Puissance</TableHead>
+              <TableHead className="text-black font-bold ">Précision</TableHead>
+              <TableHead className="text-black font-bold">PP</TableHead>
+              {firstLetters.map((version) => (
+                <TableHead
+                  className="uppercase text-center font-bold text-black"
+                  key={version}
+                >
+                  {version}
+                </TableHead>
+              ))}
             </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+          </TableHeader>
+          <TableBody className="bg-white">
+            {movesLearnedByLevel.map((move: any) => {
+              return (
+                <TableRow key={move.move.name}>
+                  <TableCell>{move.move.name}</TableCell>
+                  <TableCell className="w-16 h-6 p-0.5">
+                    <Image
+                      src={`/assets/pokemonTypes/${move.data.type.toLowerCase()}.png`}
+                      alt={move.data.type}
+                      width={100}
+                      height={100}
+                      quality={100}
+                    />
+                  </TableCell>
+                  <TableCell className="flex justify-center">
+                    <Image
+                      src={`/assets/pokemonStatus/${move.data.damage_class.name}.png`}
+                      alt={move.data.damage_class.name}
+                      width={50}
+                      height={50}
+                    />
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {move.data.power ? move.data.power : "—"}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {move.data.accuracy ? move.data.accuracy : "—"}
+                  </TableCell>
+                  <TableCell className="text-center">{move.data.pp}</TableCell>
+                  {versions.map((version) => {
+                    const versionDetails = move.version_group_details.filter(
+                      (details: any) => details.version_group.name === version
+                    );
+
+                    const levels = versionDetails
+                      .map((detail: any) => detail.level_learned_at)
+                      .join(" - ");
+                    return (
+                      <TableCell key={version} className="text-center">
+                        {levels || "N/A"}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 };

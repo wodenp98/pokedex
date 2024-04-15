@@ -45,10 +45,10 @@ export const Statistiques = ({ stats, type }: { stats: any; type: any }) => {
           <TableBody>
             {stats.map((stats: any) => (
               <TableRow key={stats.stat.frenchName}>
-                <TableCell className="font-medium bg-white ">
+                <TableCell className="font-medium bg-white">
                   {stats.stat.frenchName}
                 </TableCell>
-                <TableCell className="text-center bg-white ">
+                <TableCell className="text-center bg-white">
                   {stats.base_stat}
                 </TableCell>
                 <TableCell className="text-center bg-white ">
