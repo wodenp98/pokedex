@@ -6,7 +6,6 @@ import {
   backgroundColorTypes,
   calculateTypeEffectiveness,
   colorTypes,
-  getEvolutionOfPokemon,
   getFrenchFirstType,
   getFrenchName,
   getMovesByGeneration,
@@ -184,7 +183,68 @@ const effectivenessBackgroundColor: { [key: string]: string } = {
   "4x": "bg-[#FF5555]",
 };
 
-// varieties
+async function getEvolutionOfPokemon(url: string) {
+  const res = await fetch(url);
+  const data = await res.json();
+  return data;
+}
+
+const EvolutionDetails = ({ details }: { details: any[] }) => (
+  <div>
+    {details.map((detail, index) => (
+      <span key={index}>
+        {detail.trigger.name}{" "}
+        {detail.item && `avec l'objet ${detail.item.name}`}
+        {detail.location && `à l'endroit ${detail.location.name}`}
+        {detail.min_happiness &&
+          `avec un niveau de bonheur minimum de ${detail.min_happiness}`}
+        {detail.min_affection &&
+          `avec un niveau d'affection minimum de ${detail.min_affection}`}
+        {detail.time_of_day && `pendant la ${detail.time_of_day}`}
+        {detail.min_level && `au niveau ${detail.min_level}`}
+        {detail.held_item && `en tenant l'objet ${detail.held_item.name}`}
+        {detail.gender && `pour le genre ${detail.gender}`}
+        {index !== details.length - 1 && " ou "}
+      </span>
+    ))}
+  </div>
+);
+
+const EvolutionEntry = ({ evolution }: { evolution: any }) => (
+  <div>
+    <h3>{evolution.species.name}</h3>
+    <EvolutionDetails details={evolution.evolution_details} />
+    {evolution.evolves_to.length > 1 ? (
+      <div className="flex">
+        <h4>Évolutions suivantes :</h4>
+        {evolution.evolves_to.map(
+          ({ nextEvolution, index }: { nextEvolution: any; index: number }) => (
+            <EvolutionEntry key={index} evolution={nextEvolution} />
+          )
+        )}
+      </div>
+    ) : (
+      <div>
+        <h4>Évolutions suivantes :</h4>
+        {evolution.evolves_to.map(
+          ({ nextEvolution, index }: { nextEvolution: any; index: number }) => (
+            <EvolutionEntry key={index} evolution={nextEvolution} />
+          )
+        )}
+      </div>
+    )}
+  </div>
+);
+
+const EvolutionChain = ({ chain }: { chain: any }) => (
+  <div>
+    <h2>Chaîne d'évolution</h2>
+    <EvolutionEntry evolution={chain} />
+  </div>
+);
+
+// Création de petits composants et de nouveaux fichiers
+// design des evolves
 
 export default async function Page({ params: { id }, searchParams }: Params) {
   const pokemonData = await getPokemonData(id);
@@ -218,11 +278,6 @@ export default async function Page({ params: { id }, searchParams }: Params) {
     pokemonId: pokemonData.id,
     pokemonStats: pokemonData.stats,
   });
-
-  //ET MODIFIER TOUT LES GENERATIONS EN HAUT DU LAYOUT ?
-  //Varieties?
-  //Search bar
-  //Repartir le code en composant
 
   return (
     <div>
@@ -561,7 +616,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             ))}
           </div>
         </div>
-
+        <EvolutionChain chain={evolvePokemon.chain} />
         {/* <div
           className={`rounded-lg flex items-center py-1 justify-center flex-col ${
             backgroundColorTypes[
@@ -569,14 +624,35 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             ]
           }`}
         >
-          {evolvePokemon.map((pokemon) => {
+          {evolvePokemon.map((pokemon: any) => {
+            let evolutionMethod;
+
+            switch (pokemon.evolves?.trigger.name) {
+              case "level-up":
+                evolutionMethod = `Évolue au niveau ${pokemon.evolves.min_level}`;
+                break;
+              case "trade":
+                evolutionMethod = "Évolue par échange";
+                break;
+              case "use-item":
+                evolutionMethod = `Avec une ${pokemon.evolves.item.name}`;
+                break;
+              case "shed":
+                evolutionMethod = "Évolue en muant";
+                break;
+              default:
+                evolutionMethod = null;
+                break;
+            }
             return (
               <div
                 key={pokemon.frenchName}
                 className="w-52 flex justify-center"
               >
                 <div>
-                  <p>{pokemon.evolves?.min_level ?? ""}</p>
+                  <p className="text-center  bg-white rounded-lg">
+                    {evolutionMethod}
+                  </p>
                   <Link href={`/pokemon/${pokemon.id}`}>
                     <div className="w-full rounded-lg overflow-hidden bg-white">
                       <Image
@@ -588,7 +664,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
                         width={200}
                         height={200}
                       />
-                      <h1 className="text-lg  font-bold text-center">
+                      <h1 className="text-lg font-bold text-center">
                         {pokemon.frenchName}
                       </h1>
                     </div>

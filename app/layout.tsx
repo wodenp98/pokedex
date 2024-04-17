@@ -2,7 +2,6 @@ import { Navbar } from "@/components/Layout/Navbar";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Footer } from "@/components/Layout/Footer";
-import { LayoutGeneration } from "@/components/Layout/LayoutGeneration";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +19,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Navbar />
-        <LayoutGeneration>{children}</LayoutGeneration>
+        <div className="pt-6">{children}</div>
         <Footer />
       </body>
     </html>
