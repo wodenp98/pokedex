@@ -6,6 +6,7 @@ import {
   backgroundColorTypes,
   calculateTypeEffectiveness,
   colorTypes,
+  getEnglishName,
   getFrenchFirstType,
   getFrenchName,
   getMovesByGeneration,
@@ -13,13 +14,13 @@ import {
 } from "@/utils/helpers";
 import { CardType } from "@/components/TypePokemon/CardType";
 import { Icons } from "@/components/icons";
-import { stat } from "fs";
 import { Statistiques } from "@/components/ui/Statistiques";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { PokemonCs } from "@/components/Pokemons/PokemonCs";
 import { PokemonCt } from "@/components/Pokemons/PokemonCt";
 import { GenerationsNumber } from "@/components/Pokemons/GenerationsNumber";
+import { info } from "console";
 
 interface Params {
   params: {
@@ -189,62 +190,154 @@ async function getEvolutionOfPokemon(url: string) {
   return data;
 }
 
-const EvolutionDetails = ({ details }: { details: any[] }) => (
-  <div>
-    {details.map((detail, index) => (
-      <span key={index}>
-        {detail.trigger.name}{" "}
-        {detail.item && `avec l'objet ${detail.item.name}`}
-        {detail.location && `à l'endroit ${detail.location.name}`}
-        {detail.min_happiness &&
-          `avec un niveau de bonheur minimum de ${detail.min_happiness}`}
-        {detail.min_affection &&
-          `avec un niveau d'affection minimum de ${detail.min_affection}`}
-        {detail.time_of_day && `pendant la ${detail.time_of_day}`}
-        {detail.min_level && `au niveau ${detail.min_level}`}
-        {detail.held_item && `en tenant l'objet ${detail.held_item.name}`}
-        {detail.gender && `pour le genre ${detail.gender}`}
-        {index !== details.length - 1 && " ou "}
-      </span>
-    ))}
-  </div>
-);
+async function evolveMethodForPokemon(evolution: any) {
+  if (evolution.trigger.name === "recoil-damage") {
+    return "perdre 294 PV ou plus par contrecoup sans être mis K.O.";
+  } else if (evolution.trigger.name === "strong-style-move") {
+    return `Utiliser 20 fois ou plus la capacité Multitoxik sous Style Puissant.`;
+  } else if (evolution.trigger.name === "agile-style-move") {
+    return `Utiliser 20 fois ou plus la capacité Sprint Bouclier sous Style Rapide `;
+  } else if (evolution.trigger.name === "other") {
+    // a check
+    return "Autre";
+  } else if (evolution.trigger.name === "take-damage") {
+    return `Perdre 49 PV ou plus + marcher sous la grande arche de pierres de la Fosse des Sables`;
+  } else if (evolution.trigger.name === "three-critical-hits") {
+    return `Attaque critique 3 fois`;
+  } else if (evolution.trigger.name === "tower-of-waters") {
+    return "Gravir la Tour de l'Eau";
+  } else if (evolution.trigger.name === "tower-of-darkness") {
+    return "Gravir la Tour des Ténèbres";
+  } else if (evolution.trigger.name === "spin") {
+    return "Objet en Sucre + tourner sur soi-même";
+  } else if (evolution.trigger.name === "shed") {
+    return "Niveau 20, emplacement libre et Poké Ball dans l'inventaire";
+  } else if (evolution.trigger.name === "use-item") {
+    const url = evolution.item.url;
+    const res = await fetch(url);
+    const data = await res.json();
+    const itemNameInFrench = await getFrenchName(data);
+    return `Avec une ${itemNameInFrench.name}`;
+  } else if (
+    evolution.trigger.name === "trade" &&
+    evolution.held_item !== null
+  ) {
+    const url = evolution.held_item.url;
+    const res = await fetch(url);
+    const data = await res.json();
+    const itemNameInFrench = await getFrenchName(data);
+    return `Echange en tenant ${itemNameInFrench.name}`;
+  } else if (
+    evolution.trigger.name === "level-up" &&
+    evolution.held_item !== null
+  ) {
+    const url = evolution.held_item.url;
+    const res = await fetch(url);
+    const data = await res.json();
+    const itemNameInFrench = await getFrenchName(data);
+    return `Gain de niveau avec ${itemNameInFrench.name}`;
+  } else if (
+    evolution.trigger.name === "level-up" &&
+    evolution.min_happiness !== null &&
+    evolution.time_of_day === "day"
+  ) {
+    return "Bonheur, Jour";
+  } else if (
+    evolution.trigger.name === "level-up" &&
+    evolution.min_happiness !== null &&
+    evolution.time_of_day === "night"
+  ) {
+    return "Bonheur, Nuit";
+  } else if (
+    evolution.trigger.name === "level-up" &&
+    evolution.min_happiness !== null
+  ) {
+    return "Bonheur";
+  } else if (
+    evolution.trigger.name === "level-up" &&
+    evolution.min_level !== null
+  ) {
+    return `Niveau ${evolution.min_level}`;
+  } else if (
+    evolution.trigger.name === "level-up" &&
+    evolution.location !== null
+  ) {
+    const url = evolution.location.url;
+    const res = await fetch(url);
+    const data = await res.json();
 
-const EvolutionEntry = ({ evolution }: { evolution: any }) => (
-  <div>
-    <h3>{evolution.species.name}</h3>
-    <EvolutionDetails details={evolution.evolution_details} />
-    {evolution.evolves_to.length > 1 ? (
-      <div className="flex">
-        <h4>Évolutions suivantes :</h4>
-        {evolution.evolves_to.map(
-          ({ nextEvolution, index }: { nextEvolution: any; index: number }) => (
-            <EvolutionEntry key={index} evolution={nextEvolution} />
-          )
-        )}
-      </div>
-    ) : (
-      <div>
-        <h4>Évolutions suivantes :</h4>
-        {evolution.evolves_to.map(
-          ({ nextEvolution, index }: { nextEvolution: any; index: number }) => (
-            <EvolutionEntry key={index} evolution={nextEvolution} />
-          )
-        )}
-      </div>
-    )}
-  </div>
-);
+    const locationName =
+      (await getFrenchName(data)) ?? (await getEnglishName(data));
 
-const EvolutionChain = ({ chain }: { chain: any }) => (
-  <div>
-    <h2>Chaîne d'évolution</h2>
-    <EvolutionEntry evolution={chain} />
-  </div>
-);
+    return `Près de ${locationName.name}`;
+  } else if (
+    evolution.trigger.name === "level-up" &&
+    evolution.known_move_type !== null
+  ) {
+    const url = evolution.known_move_type.url;
+    const res = await fetch(url);
+    const data = await res.json();
+    const typeName = await getFrenchName(data);
+
+    return `Gagner un niveau en ayant une capacité ${typeName.name}`;
+  } else {
+    return "";
+  }
+}
+
+const EvolutionEntry = async ({ evolution }: { evolution: any }) => {
+  const url = evolution.species.url;
+  const splitUrl = url.split("/")[6];
+
+  const pokemonData = await getPokemonData(splitUrl);
+  const informationPokemon = await getInformationsForPokemon(splitUrl);
+  const pokemonFrenchName = await getFrenchName(informationPokemon);
+
+  const evolveMethods = await Promise.all(
+    evolution.evolution_details.map(async (detail: any) => {
+      const method = await evolveMethodForPokemon(detail);
+      return (
+        <div className="py-1 rounded-md bg-white" key={method}>
+          <p className="bg-white text-xs text-center p-1">{method}</p>
+        </div>
+      );
+    })
+  );
+
+  return (
+    <div className="flex flex-col gap-1">
+      <>{evolveMethods}</>
+      <Link href={`/pokemon/${informationPokemon.id}`}>
+        <div className="w-full rounded-lg overflow-hidden bg-white flex items-center justify-center flex-col">
+          <Image
+            src={pokemonData.sprites.other?.["official-artwork"]?.front_default}
+            alt={pokemonFrenchName.name}
+            width={200}
+            height={200}
+          />
+          <h1 className="text-lg font-bold text-center">
+            {pokemonFrenchName.name}
+          </h1>
+        </div>
+      </Link>
+      {evolution.evolves_to.length > 1 ? (
+        <div key={evolution.species.name} className="flex gap-1">
+          {evolution.evolves_to.map((nextEvolution: any, index: number) => (
+            <EvolutionEntry key={index} evolution={nextEvolution} />
+          ))}
+        </div>
+      ) : (
+        <div key={evolution.species.name}>
+          {evolution.evolves_to.map((nextEvolution: any, index: number) => (
+            <EvolutionEntry key={index} evolution={nextEvolution} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Création de petits composants et de nouveaux fichiers
-// design des evolves
 
 export default async function Page({ params: { id }, searchParams }: Params) {
   const pokemonData = await getPokemonData(id);
@@ -392,7 +485,8 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             <p className="capitalize  bg-white rounded w-3/5 p-2">
               {
                 informationsPokemon.genera.find(
-                  (gen: any) => gen.language.name === "fr"
+                  (gen: any) =>
+                    gen.language.name === "fr" || gen.language.name === "en"
                 ).genus
               }
             </p>
@@ -556,9 +650,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
         <div>
           <Statistiques stats={pokemonStats} type={typeFrench.name} />
         </div>
-
         <GenerationsNumber />
-
         <div>
           <PokemonCs
             moves={pokemonMoves}
@@ -569,11 +661,9 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             type={typeFrench.name}
           />
         </div>
-
         <div>
           <PokemonCt moves={pokemonMoves} type={typeFrench.name} />
         </div>
-
         <div
           className={`rounded-lg flex items-center justify-center p-1 flex-col ${
             backgroundColorTypes[
@@ -616,64 +706,15 @@ export default async function Page({ params: { id }, searchParams }: Params) {
             ))}
           </div>
         </div>
-        <EvolutionChain chain={evolvePokemon.chain} />
-        {/* <div
-          className={`rounded-lg flex items-center py-1 justify-center flex-col ${
+        <div
+          className={`rounded-lg flex items-center p-1 justify-center flex-col ${
             backgroundColorTypes[
               typeFrench.name.toLowerCase() as keyof typeof backgroundColorTypes
             ]
           }`}
         >
-          {evolvePokemon.map((pokemon: any) => {
-            let evolutionMethod;
-
-            switch (pokemon.evolves?.trigger.name) {
-              case "level-up":
-                evolutionMethod = `Évolue au niveau ${pokemon.evolves.min_level}`;
-                break;
-              case "trade":
-                evolutionMethod = "Évolue par échange";
-                break;
-              case "use-item":
-                evolutionMethod = `Avec une ${pokemon.evolves.item.name}`;
-                break;
-              case "shed":
-                evolutionMethod = "Évolue en muant";
-                break;
-              default:
-                evolutionMethod = null;
-                break;
-            }
-            return (
-              <div
-                key={pokemon.frenchName}
-                className="w-52 flex justify-center"
-              >
-                <div>
-                  <p className="text-center  bg-white rounded-lg">
-                    {evolutionMethod}
-                  </p>
-                  <Link href={`/pokemon/${pokemon.id}`}>
-                    <div className="w-full rounded-lg overflow-hidden bg-white">
-                      <Image
-                        src={
-                          pokemon.sprites.other?.["official-artwork"]
-                            ?.front_default
-                        }
-                        alt={pokemon.frenchName}
-                        width={200}
-                        height={200}
-                      />
-                      <h1 className="text-lg font-bold text-center">
-                        {pokemon.frenchName}
-                      </h1>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
-        </div> */}
+          <EvolutionEntry evolution={evolvePokemon.chain} />
+        </div>
       </div>
     </div>
   );
