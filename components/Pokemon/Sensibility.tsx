@@ -15,7 +15,7 @@ export const Sensibility = async ({ id }: { id: number }) => {
 
   return (
     <div
-      className={`rounded-lg flex items-center justify-center p-1 flex-col ${
+      className={`rounded-lg w-[350px] md:w-[500px] flex items-center justify-center p-1 flex-col ${
         backgroundColorTypes[
           typeFrench.name.toLowerCase() as keyof typeof backgroundColorTypes
         ]
@@ -34,7 +34,7 @@ export const Sensibility = async ({ id }: { id: number }) => {
             key={type.type}
             className="flex flex-col justify-center items-center bg-white rounded"
           >
-            <div className="w-24 h-6 py-px">
+            <div className="py-px">
               <Image
                 src={`/assets/pokemonTypes/${type?.type.toLowerCase()}.png`}
                 alt={type?.type}

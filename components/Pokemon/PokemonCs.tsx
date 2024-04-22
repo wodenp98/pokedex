@@ -48,7 +48,7 @@ export const PokemonCs = ({
   });
   return (
     <Card
-      className={`rounded-lg border-0 ${
+      className={`rounded-lg w-[350px] md:w-[700px] border-0 ${
         backgroundColorTypes[
           type.toLowerCase() as keyof typeof backgroundColorTypes
         ]

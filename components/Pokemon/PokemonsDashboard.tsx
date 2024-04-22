@@ -6,7 +6,7 @@ import { Card, CardContent } from "../ui/card";
 
 export const PokemonsDashboard = ({ pokemons }: { pokemons: any }) => {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {pokemons.map((pokemon: any) => (
         <Card key={pokemon.name} className="w-80 flex justify-center">
           <CardContent>

@@ -31,11 +31,13 @@ function GenerationLink({ generation }: { generation: number }) {
 export const GenerationsNumber = () => {
   return (
     <div id="moves">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col items-center gap-2">
         <p className="font-bold">Génération : </p>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((generation) => (
-          <GenerationLink key={generation} generation={generation} />
-        ))}
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((generation) => (
+            <GenerationLink key={generation} generation={generation} />
+          ))}
+        </div>
       </div>
     </div>
   );

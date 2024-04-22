@@ -200,6 +200,9 @@ export async function getStatsForPokemon({
 export async function getEvolutionOfPokemon(url: string) {
   const res = await fetch(url);
   const data = await res.json();
+
+  console.log("data", data);
+
   return data;
 }
 
@@ -211,7 +214,6 @@ export async function evolveMethodForPokemon(evolution: any) {
   } else if (evolution.trigger.name === "agile-style-move") {
     return `Utiliser 20 fois ou plus la capacité Sprint Bouclier sous Style Rapide `;
   } else if (evolution.trigger.name === "other") {
-    // a check
     return "Autre";
   } else if (evolution.trigger.name === "take-damage") {
     return `Perdre 49 PV ou plus + marcher sous la grande arche de pierres de la Fosse des Sables`;

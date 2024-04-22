@@ -20,7 +20,7 @@ import { colorTypes } from "../colors";
 export const Statistiques = ({ stats, type }: { stats: any; type: any }) => {
   return (
     <Card
-      className={`rounded-lg border-0 ${
+      className={`rounded-lg w-[350px] md:w-[500px] border-0 ${
         backgroundColorTypes[
           type.toLowerCase() as keyof typeof backgroundColorTypes
         ]

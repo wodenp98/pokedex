@@ -1,5 +1,5 @@
-import { getPokemons } from "@/utils/helpers";
 import { PokemonsDashboard } from "@/components/Pokemon/PokemonsDashboard";
+import { getPokemons } from "@/utils/apiCall";
 
 export default async function SecondGen() {
   const pokemons = await getPokemons({ limit: 100, offset: 151 });

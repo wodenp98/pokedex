@@ -17,10 +17,11 @@ export const EvolutionEntry = async ({ evolution }: { evolution: any }) => {
 
   const evolveMethods = await Promise.all(
     evolution.evolution_details.map(async (detail: any) => {
+      console.log("detail", detail);
       const method = await evolveMethodForPokemon(detail);
       return (
         <div className="py-1 rounded-md bg-white" key={method}>
-          <p className="bg-white text-md text-center p-1">{method}</p>
+          <p className="bg-white text-xs text-center p-1">{method}</p>
         </div>
       );
     })

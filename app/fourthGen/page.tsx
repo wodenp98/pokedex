@@ -1,4 +1,4 @@
-import { getPokemons } from "@/utils/helpers";
+import { getPokemons } from "@/utils/apiCall";
 import { PokemonsDashboard } from "@/components/Pokemon/PokemonsDashboard";
 
 export default async function FourthGen() {

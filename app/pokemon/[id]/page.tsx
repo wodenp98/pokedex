@@ -50,8 +50,10 @@ export default async function Page({ params: { id }, searchParams }: Params) {
 
   return (
     <div>
-      <div className="flex flex-col items-center justify-center py-2">
+      <div className="flex flex-col items-center justify-center gap-4 py-2">
         <InformationsPokemon id={id} />
+
+        <Sensibility id={id} />
         <div>
           <Statistiques stats={pokemonStats} type={typeFrench.name} />
         </div>
@@ -69,7 +71,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
         <div>
           <PokemonCt moves={pokemonMoves} type={typeFrench.name} />
         </div>
-        <Sensibility id={id} />
+
         <div
           className={`rounded-lg  flex items-center p-1 justify-center flex-col ${
             backgroundColorTypes[
