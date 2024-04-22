@@ -197,11 +197,18 @@ export async function getStatsForPokemon({
   return pokemonStats;
 }
 
+export async function getGenerationForPokemon(url: string) {
+  const res = await fetch(url);
+  const data = await res.json();
+  const generationUrl = data.generation.url;
+  console.log("generationUrl", generationUrl);
+  const generationNumber = parseInt(generationUrl.split("/")[6], 10);
+  return generationNumber;
+}
+
 export async function getEvolutionOfPokemon(url: string) {
   const res = await fetch(url);
   const data = await res.json();
-
-  console.log("data", data);
 
   return data;
 }

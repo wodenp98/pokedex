@@ -2,6 +2,7 @@ import {
   getPokemonData,
   getInformationsForPokemon,
   evolveMethodForPokemon,
+  getGenerationForPokemon,
 } from "@/utils/apiCall";
 import { getFrenchName } from "@/utils/helpers";
 import Link from "next/link";
@@ -17,7 +18,6 @@ export const EvolutionEntry = async ({ evolution }: { evolution: any }) => {
 
   const evolveMethods = await Promise.all(
     evolution.evolution_details.map(async (detail: any) => {
-      console.log("detail", detail);
       const method = await evolveMethodForPokemon(detail);
       return (
         <div className="py-1 rounded-md bg-white" key={method}>
@@ -71,6 +71,8 @@ export const EvolutionEeveeEntry = async ({
   const pokemonData = await getPokemonData(splitUrl);
   const informationPokemon = await getInformationsForPokemon(splitUrl);
   const pokemonFrenchName = await getFrenchName(informationPokemon);
+
+  console.log("evolution", evolution);
 
   const evolveMethods = await Promise.all(
     evolution.evolution_details.map(async (detail: any) => {
