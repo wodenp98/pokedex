@@ -72,8 +72,6 @@ export const EvolutionEeveeEntry = async ({
   const informationPokemon = await getInformationsForPokemon(splitUrl);
   const pokemonFrenchName = await getFrenchName(informationPokemon);
 
-  console.log("evolution", evolution);
-
   const evolveMethods = await Promise.all(
     evolution.evolution_details.map(async (detail: any) => {
       const method = await evolveMethodForPokemon(detail);
