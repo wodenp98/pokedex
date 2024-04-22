@@ -7,8 +7,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card, CardHeader, CardContent, CardFooter, CardTitle } from "./card";
-import { backgroundColorTypes, colorTypes } from "@/utils/helpers";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+  CardTitle,
+} from "../ui/card";
+import { backgroundColorTypes } from "@/utils/colorsBackground";
+import { colorTypes } from "../colors";
 
 export const Statistiques = ({ stats, type }: { stats: any; type: any }) => {
   return (

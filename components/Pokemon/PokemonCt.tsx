@@ -7,9 +7,10 @@ import {
   TableBody,
   TableCell,
 } from "../ui/table";
-import { backgroundColorTypes, colorTypes } from "@/utils/helpers";
 import { Card, CardContent } from "../ui/card";
 import Image from "next/image";
+import { backgroundColorTypes } from "@/utils/colorsBackground";
+import { colorTypes } from "../colors";
 
 export const PokemonCt = ({ moves, type }: { moves: any; type: string }) => {
   const movesLearnedWithMachines = moves

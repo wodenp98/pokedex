@@ -1,5 +1,5 @@
-import { PokemonsDashboard } from "@/components/Pokemons/PokemonsDashboard";
-import { getPokemons } from "@/utils/helpers";
+import { PokemonsDashboard } from "@/components/Pokemon/PokemonsDashboard";
+import { getPokemons } from "@/utils/apiCall";
 
 export default async function Home() {
   const pokemons = await getPokemons({ limit: 151, offset: 0 });

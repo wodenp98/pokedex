@@ -1,9 +1,3 @@
-import {
-  getVersion,
-  getFrenchFirstType,
-  backgroundColorTypes,
-} from "@/utils/helpers";
-
 import React from "react";
 import { colorTypes } from "../colors";
 import {
@@ -16,6 +10,8 @@ import {
 } from "../ui/table";
 import Image from "next/image";
 import { Card, CardContent } from "../ui/card";
+import { backgroundColorTypes } from "@/utils/colorsBackground";
+import { getVersion } from "@/utils/helpers";
 
 export const PokemonCs = ({
   moves,

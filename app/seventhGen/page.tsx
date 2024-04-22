@@ -1,5 +1,5 @@
 import { getPokemons } from "@/utils/helpers";
-import { PokemonsDashboard } from "@/components/Pokemons/PokemonsDashboard";
+import { PokemonsDashboard } from "@/components/Pokemon/PokemonsDashboard";
 
 export default async function SeventhGen() {
   const pokemons = await getPokemons({ limit: 88, offset: 721 });

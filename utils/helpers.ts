@@ -1,70 +1,4 @@
-import {
-  getPokemonData,
-  getInformationsForPokemon,
-} from "@/app/pokemon/[id]/page";
-
-export async function getPokemons({
-  limit,
-  offset,
-}: {
-  limit: number;
-  offset: number;
-}) {
-  const res = await fetch(
-    `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
-  );
-  const data = await res.json();
-
-  const pokemonDetails = await Promise.all(
-    data.results.map(async (pokemon: any) => {
-      const pokemonRes = await fetch(pokemon.url);
-      return await pokemonRes.json();
-    })
-  );
-
-  const pokemonFrenchNames = await Promise.all(
-    pokemonDetails.map(async (pokemon: any) => {
-      const pokemonRes = await fetch(
-        `https://pokeapi.co/api/v2/pokemon-species/${pokemon.id}/`
-      );
-      const data = await pokemonRes.json();
-
-      const name = await getFrenchName(data);
-
-      return name;
-    })
-  );
-
-  const pokemonsWithDetails = data.results.map(
-    (pokemon: any, index: number) => {
-      return {
-        ...pokemon,
-        name: pokemonFrenchNames[index].name,
-        details: pokemonDetails[index],
-      };
-    }
-  );
-
-  return pokemonsWithDetails;
-}
-
-export async function getFrenchFirstType(url: string) {
-  const res = await fetch(url);
-  const data = await res.json();
-
-  const nameFrench = await getFrenchName(data);
-
-  return nameFrench;
-}
-
-export async function getFrenchSecondType(url: string) {
-  const res = await fetch(url);
-  const data = await res.json();
-
-  const nameFrench = await getFrenchName(data);
-
-  return nameFrench;
-}
+import { getFrenchFirstType, getFrenchSecondType } from "./apiCall";
 
 export const typeChart = [
   {
@@ -378,44 +312,14 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
   return filteredMoves;
 }
 
-export const colorTypes = {
-  feu: "bg-[#E72324]",
-  eau: "bg-[#2481EF]",
-  plante: "bg-[#3da224]",
-  électrik: "bg-[#FAC100]",
-  sol: "bg-[#92501B]",
-  roche: "bg-[#b0aa82]",
-  fée: "bg-[#EF70EF]",
-  poison: "bg-[#923FCC]",
-  insecte: "bg-[#92A212]",
-  dragon: "bg-[#4F60E2]",
-  psy: "bg-[#ef3f7a]",
-  vol: "bg-[#82BAEF]",
-  combat: "bg-[#FF8100]",
-  normal: "bg-[#A0A2A0]",
-  spectre: "bg-[#703F70]",
-  glace: "bg-[#3DD9FF]",
-  ténèbres: "bg-[#4F3F3D]",
-  acier: "bg-[#60A2B9]",
-};
-
-export const backgroundColorTypes = {
-  feu: "bg-[#FDDCD5]",
-  eau: "bg-[#D7EBFF]",
-  plante: "bg-[#E4F5DC]",
-  électrik: "bg-[#FFF3D5]",
-  sol: "bg-[#F6F0DE]",
-  roche: "bg-[#F1EDDE]",
-  fée: "bg-[#F8EAF9]",
-  poison: "bg-[#F0DEED]",
-  insecte: "bg-[#EEF1D2]",
-  dragon: "bg-[#E7DDFD]",
-  psy: "bg-[#FFE3ED]",
-  vol: "bg-[#EBEEFD]",
-  combat: "bg-[#FFEDDD]",
-  normal: "bg-[#EEEDE9]",
-  spectre: "bg-[#F7E1F7]",
-  glace: "bg-[#DEF5FA]",
-  ténèbres: "bg-[#E3DEDA]",
-  acier: "bg-[#EEEEF3]",
+export const generationNumbers: { [key: string]: string } = {
+  "generation-i": "1",
+  "generation-ii": "2",
+  "generation-iii": "3",
+  "generation-iv": "4",
+  "generation-v": "5",
+  "generation-vi": "6",
+  "generation-vii": "7",
+  "generation-viii": "8",
+  "generation-ix": "9",
 };

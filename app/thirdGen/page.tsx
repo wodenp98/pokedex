@@ -1,5 +1,5 @@
 import { getPokemons } from "@/utils/helpers";
-import { PokemonsDashboard } from "@/components/Pokemons/PokemonsDashboard";
+import { PokemonsDashboard } from "@/components/Pokemon/PokemonsDashboard";
 
 export default async function ThirdGen() {
   const pokemons = await getPokemons({ limit: 135, offset: 251 });

@@ -1,6 +1,6 @@
-import { getFrenchFirstType, getFrenchSecondType } from "@/utils/helpers";
+import { getFrenchFirstType, getFrenchSecondType } from "@/utils/apiCall";
 import React from "react";
-import { colorTypes } from "@/utils/helpers";
+import { colorTypes } from "../colors";
 
 export const CardType = async ({
   firstTypeUrl,
