@@ -36,7 +36,7 @@ const EvolutionDetails = async ({ evolutions }: any) => {
   );
 
   return (
-    <div className="flex gap-1">
+    <div className="flex items-stretch gap-1">
       {pokemons.map((pokemon: any) => (
         <Link href={`/pokemon/${pokemon.pokedex_id}`} key={pokemon.name.fr}>
           <div className="w-full rounded-b-lg overflow-hidden bg-white flex items-center justify-center flex-col">
@@ -57,7 +57,7 @@ const EvolutionDetails = async ({ evolutions }: any) => {
 
 const EvolutionComponent = ({ evolutionData }: any) => {
   return (
-    <div className="flex w-[350px] md:w-[500px] gap-1">
+    <div className="flex gap-1">
       {evolutionData.pre && evolutionData.pre.length > 0 && (
         <div>
           <EvolutionDetails evolutions={evolutionData.pre} />
