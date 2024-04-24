@@ -12,7 +12,7 @@ import { CardType } from "../TypePokemon/CardType";
 import { TypePokemon } from "../TypePokemon/TypePokemon";
 import { colorTypes } from "../colors";
 import { Icons } from "../icons";
-import { getFrenchName } from "@/utils/helpers";
+import { getFrenchName, getPokedexInFrench } from "@/utils/helpers";
 import Image from "next/image";
 
 export const InformationsPokemon = async ({ id }: { id: number }) => {
@@ -21,7 +21,9 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
     pokemonData.pokedex_id
   );
 
-  // console.log("informations", informationsPokemon.pokedex_numbers);
+  const pokedex = await getPokedexInFrench(informationsPokemon.pokedex_numbers);
+
+  // console.log("pokedex", pokedex);
 
   // french name for pokedex name?
 
@@ -89,11 +91,11 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
 
         <div className="bg-white w-full p-4 rounded">
           <div className="grid grid-cols-3 gap-2 text-center">
-            {informationsPokemon.pokedex_numbers.map((pokedexNumber: any) => (
-              <div key={pokedexNumber.pokedex.name}>
+            {pokedex.map((pokedexNumber: any) => (
+              <div key={pokedexNumber.name}>
                 <div>
                   <h3 className="font-bold capitalize text-sm">
-                    {pokedexNumber.pokedex.name.replace(/-/g, " ")}
+                    {pokedexNumber.name.replace(/-/g, " ")}
                   </h3>
                   <p className="text-sm">{pokedexNumber.entry_number}</p>
                 </div>
@@ -188,11 +190,15 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
           Groupes d'Oeuf
         </p>
         <div className="capitalize bg-white rounded w-3/5 p-2 flex flex-col justify-center">
-          {pokemonData.egg_groups.map((egg: any) => (
-            <div key={egg}>
-              <p>{egg}</p>
-            </div>
-          ))}
+          {!pokemonData.egg_groups ? (
+            <p>Inconnu</p>
+          ) : (
+            pokemonData.egg_groups.map((egg: any) => (
+              <div key={egg}>
+                <p>{egg}</p>
+              </div>
+            ))
+          )}
         </div>
       </div>
       <div className="flex gap-0.5 w-full items-center p-1">
