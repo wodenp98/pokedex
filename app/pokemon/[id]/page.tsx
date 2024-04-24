@@ -39,7 +39,7 @@ const EvolutionDetails = async ({ evolutions }: any) => {
     <div className="flex items-stretch gap-1">
       {pokemons.map((pokemon: any) => (
         <Link href={`/pokemon/${pokemon.pokedex_id}`} key={pokemon.name.fr}>
-          <div className="w-full rounded-b-lg overflow-hidden bg-white flex items-center justify-center flex-col">
+          <div className="w-full h-full rounded-b-lg overflow-hidden bg-white flex items-center justify-center flex-col">
             <Image
               src={pokemon.sprites.regular}
               alt={pokemon.name.fr}
