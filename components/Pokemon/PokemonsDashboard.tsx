@@ -8,25 +8,24 @@ export const PokemonsDashboard = ({ pokemons }: { pokemons: any }) => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {pokemons.map((pokemon: any) => (
-        <Card key={pokemon.name} className="w-80 flex justify-center">
+        <Card key={pokemon.name.fr} className="w-80 flex justify-center">
           <CardContent>
-            <Link href={`/pokemon/${pokemon.details.id}`}>
+            <Link href={`/pokemon/${pokemon.pokedex_id}`}>
               <div className="w-full rounded-lg overflow-hidden">
                 <Image
-                  src={
-                    pokemon.details.sprites.other?.["official-artwork"]
-                      ?.front_default ?? pokemon.details.sprites.front_default
-                  }
-                  alt={pokemon.name}
+                  src={pokemon.sprites.regular}
+                  alt={pokemon.name.fr}
                   width={200}
                   height={200}
                 />
               </div>
-              <h1 className="text-xl font-bold text-center">{pokemon.name}</h1>
+              <h1 className="text-xl font-bold text-center">
+                {pokemon.name.fr}
+              </h1>
               <div className="flex justify-center gap-2">
-                {pokemon.details.types.map((type: any) => (
-                  <div key={type.type.name}>
-                    <TypePokemon url={type.type.url} />
+                {pokemon.types?.map((type: any) => (
+                  <div key={type.name}>
+                    <TypePokemon name={type.name} />
                   </div>
                 ))}
               </div>

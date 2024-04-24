@@ -1,32 +1,19 @@
-import { getFrenchFirstType, getFrenchSecondType } from "@/utils/apiCall";
 import React from "react";
 import { colorTypes } from "../colors";
 
-export const CardType = async ({
-  firstTypeUrl,
-  secondTypeUrl,
-  name,
-  id,
-}: any) => {
-  const firstTypeFrench = await getFrenchFirstType(firstTypeUrl);
-  const secondTypeFrench = await getFrenchSecondType(secondTypeUrl);
-
+export const CardType = async ({ firstType, secondType, name, id }: any) => {
   return (
     <div className="flex gap-1 h-8">
       <div
         className={`rounded-md w-1/3 font-bold flex justify-center items-center ${
-          colorTypes[
-            secondTypeFrench.name.toLowerCase() as keyof typeof colorTypes
-          ]
+          colorTypes[secondType.toLowerCase() as keyof typeof colorTypes]
         }`}
       >
         N°{String(id).padStart(4, "0")}
       </div>
       <div
         className={`rounded-md capitalize w-2/3 font-bold flex justify-center items-center ${
-          colorTypes[
-            firstTypeFrench.name.toLowerCase() as keyof typeof colorTypes
-          ]
+          colorTypes[firstType.toLowerCase() as keyof typeof colorTypes]
         }`}
       >
         {name}

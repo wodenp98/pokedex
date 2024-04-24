@@ -35,25 +35,25 @@ export const Statistiques = ({ stats, type }: { stats: any; type: any }) => {
               } 
               `}
             >
-              <TableHead className="font-bold text-black">
+              <TableHead className="font-bold  text-black">
                 Statistique
               </TableHead>
-              <TableHead className="font-bold text-black">
+              <TableHead className="font-bold text-center text-black">
                 Statistique de base
               </TableHead>
-              <TableHead className="font-bold text-black">
+              <TableHead className="font-bold text-center text-black">
                 Min (lvl100)
               </TableHead>
-              <TableHead className="font-bold text-black">
+              <TableHead className="font-bold text-center text-black">
                 Max (lvl100)
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {stats.map((stats: any) => (
-              <TableRow key={stats.stat.frenchName}>
+              <TableRow key={stats.name}>
                 <TableCell className="font-medium bg-white">
-                  {stats.stat.frenchName}
+                  {stats.name}
                 </TableCell>
                 <TableCell className="text-center bg-white">
                   {stats.base_stat}

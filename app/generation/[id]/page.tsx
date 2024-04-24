@@ -1,15 +1,20 @@
 import { SearchBar } from "@/components/Layout/SearchBar";
 import { PokemonsDashboard } from "@/components/Pokemon/PokemonsDashboard";
-import { getAllPokemons } from "@/utils/apiCall";
+import { getPokemonsByGeneration } from "@/utils/apiCall";
 import { Suspense } from "react";
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams?: { query?: string };
-}) {
+interface Params {
+  params: {
+    id: number;
+  };
+  searchParams?: {
+    query?: string;
+  };
+}
+
+export default async function Home({ params: { id }, searchParams }: Params) {
   const query = searchParams?.query || "";
-  const pokemons = await getAllPokemons();
+  const pokemons = await getPokemonsByGeneration(id);
 
   const filteredPokemons = pokemons.filter((pokemon: any) =>
     pokemon.name.fr.toLowerCase().includes(query.toLowerCase())

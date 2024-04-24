@@ -1,4 +1,4 @@
-import { getFrenchFirstType, getFrenchSecondType } from "./apiCall";
+import { getFrenchFirstType } from "./apiCall";
 
 export const typeChart = [
   {
@@ -127,62 +127,62 @@ interface PokemonType {
   };
 }
 
-export const calculateTypeEffectiveness = async (
-  pokemonTypes: PokemonType[]
-) => {
-  let typeDefences: Array<{ type: string; effectiveness: string }> = [];
+// export const calculateTypeEffectiveness = async (
+//   pokemonTypes: PokemonType[]
+// ) => {
+//   let typeDefences: Array<{ type: string; effectiveness: string }> = [];
 
-  const getFirstType = await getFrenchFirstType(pokemonTypes[0].type.url);
-  const getSecondType =
-    pokemonTypes.length > 1
-      ? await getFrenchSecondType(pokemonTypes[1].type.url)
-      : "";
+//   const getFirstType = await getFrenchFirstType(pokemonTypes[0].type.url);
+//   const getSecondType =
+//     pokemonTypes.length > 1
+//       ? await getFrenchSecondType(pokemonTypes[1].type.url)
+//       : "";
 
-  let type1 = getFirstType.name.toLowerCase();
-  let type2 = getSecondType ? getSecondType.name.toLowerCase() : "";
+//   let type1 = getFirstType.name.toLowerCase();
+//   let type2 = getSecondType ? getSecondType.name.toLowerCase() : "";
 
-  for (const type of typeChart) {
-    let effectiveness = "";
+//   for (const type of typeChart) {
+//     let effectiveness = "";
 
-    if (type["immunes"].includes(type1) || type["immunes"].includes(type2)) {
-      effectiveness = "0x";
-    } else if (
-      type["weaknesses"].includes(type1) &&
-      type["weaknesses"].includes(type2)
-    ) {
-      effectiveness = "0.25x";
-    } else if (
-      type["strengths"].includes(type1) &&
-      type["strengths"].includes(type2)
-    ) {
-      effectiveness = "4x";
-    } else if (
-      (type["strengths"].includes(type1) &&
-        type["weaknesses"].includes(type2)) ||
-      (type["strengths"].includes(type2) && type["weaknesses"].includes(type1))
-    ) {
-      effectiveness = "1x";
-    } else if (
-      (!type["strengths"].includes(type1) &&
-        type["weaknesses"].includes(type2)) ||
-      (!type["strengths"].includes(type2) && type["weaknesses"].includes(type1))
-    ) {
-      effectiveness = "0.5x";
-    } else if (
-      (type["strengths"].includes(type1) &&
-        !type["weaknesses"].includes(type2)) ||
-      (type["strengths"].includes(type2) && !type["weaknesses"].includes(type1))
-    ) {
-      effectiveness = "2x";
-    } else {
-      effectiveness = "1x";
-    }
+//     if (type["immunes"].includes(type1) || type["immunes"].includes(type2)) {
+//       effectiveness = "0x";
+//     } else if (
+//       type["weaknesses"].includes(type1) &&
+//       type["weaknesses"].includes(type2)
+//     ) {
+//       effectiveness = "0.25x";
+//     } else if (
+//       type["strengths"].includes(type1) &&
+//       type["strengths"].includes(type2)
+//     ) {
+//       effectiveness = "4x";
+//     } else if (
+//       (type["strengths"].includes(type1) &&
+//         type["weaknesses"].includes(type2)) ||
+//       (type["strengths"].includes(type2) && type["weaknesses"].includes(type1))
+//     ) {
+//       effectiveness = "1x";
+//     } else if (
+//       (!type["strengths"].includes(type1) &&
+//         type["weaknesses"].includes(type2)) ||
+//       (!type["strengths"].includes(type2) && type["weaknesses"].includes(type1))
+//     ) {
+//       effectiveness = "0.5x";
+//     } else if (
+//       (type["strengths"].includes(type1) &&
+//         !type["weaknesses"].includes(type2)) ||
+//       (type["strengths"].includes(type2) && !type["weaknesses"].includes(type1))
+//     ) {
+//       effectiveness = "2x";
+//     } else {
+//       effectiveness = "1x";
+//     }
 
-    typeDefences.push({ type: type["name"], effectiveness });
-  }
+//     typeDefences.push({ type: type["name"], effectiveness });
+//   }
 
-  return typeDefences;
-};
+//   return typeDefences;
+// };
 
 export const getFrenchName = async (data: any) => {
   const name = data.names.find((name: any) => name.language.name === "fr");

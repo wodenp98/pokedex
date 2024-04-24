@@ -41,10 +41,10 @@ export const backgroundColorTypes = {
 };
 
 export const effectivenessBackgroundColor: { [key: string]: string } = {
-  "0x": "bg-[#CCCCCC]",
-  "0.25x": "bg-[#3AF24B]",
-  "0.5x": "bg-[#AAFFAA]",
-  "1x": "bg-[#FFFFAA]",
-  "2x": "bg-[#FFAAAA]",
-  "4x": "bg-[#FF5555]",
+  0: "bg-[#CCCCCC]",
+  0.25: "bg-[#3AF24B]",
+  0.5: "bg-[#AAFFAA]",
+  1: "bg-[#FFFFAA]",
+  2: "bg-[#FFAAAA]",
+  4: "bg-[#FF5555]",
 };

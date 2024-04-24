@@ -16,10 +16,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="fr" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/assets/logo/pokeball.svg" sizes="36x36" />
+      </head>
+      <body className={`${inter.className} relative min-h-screen`}>
         <Navbar />
-        <div className="pt-6">{children}</div>
+        <div className="pt-4">{children}</div>
         <Footer />
       </body>
     </html>
