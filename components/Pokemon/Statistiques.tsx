@@ -16,8 +16,15 @@ import {
 } from "../ui/card";
 import { backgroundColorTypes } from "@/utils/colorsBackground";
 import { colorTypes } from "../colors";
+import { StatsArray } from "@/utils/type";
 
-export const Statistiques = ({ stats, type }: { stats: any; type: any }) => {
+export const Statistiques = ({
+  stats,
+  type,
+}: {
+  stats: StatsArray[];
+  type: string;
+}) => {
   return (
     <Card
       className={`rounded-lg w-[350px] md:w-[500px] border-0 ${
@@ -50,7 +57,7 @@ export const Statistiques = ({ stats, type }: { stats: any; type: any }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {stats.map((stats: any) => (
+            {stats.map((stats) => (
               <TableRow key={stats.name}>
                 <TableCell className="font-medium bg-white">
                   {stats.name}

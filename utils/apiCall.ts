@@ -1,68 +1,50 @@
 import { getFrenchName } from "./helpers";
+import {
+  PokemonType,
+  PokemonStats,
+  StatsArray,
+  DataLanguage,
+  Moves,
+} from "./type";
 
-export async function getAllPokemons() {
+export async function getAllPokemons(): Promise<PokemonType[]> {
   const res = await fetch("https://tyradex.vercel.app/api/v1/pokemon", {
     cache: "no-store",
   });
-  const data = await res.json();
+  const data: PokemonType[] = await res.json();
 
   const allPokemonsExceptFirst = data.slice(1);
 
   return allPokemonsExceptFirst;
 }
 
-export async function getPokemonsByGeneration(id: number) {
+export async function getPokemonsByGeneration(
+  id: number
+): Promise<PokemonType[]> {
   const res = await fetch(`https://tyradex.vercel.app/api/v1/gen/${id}`);
 
-  const data = await res.json();
+  const data: PokemonType[] = await res.json();
 
   return data;
 }
 
-export async function getPokemonData(id: number) {
+export async function getPokemonData(id: number): Promise<PokemonType> {
   const res = await fetch(`https://tyradex.vercel.app/api/v1/pokemon/${id}`);
-  const data = await res.json();
+  const data: PokemonType = await res.json();
   return data;
 }
 
-export async function getPokemonMoves(id: number) {
+export async function getPokemonMoves(id: number): Promise<Moves> {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-  const data = await res.json();
+  const data: Moves = await res.json();
   return data;
 }
 
-export async function getInformationsForPokemon(id: number) {
+export async function getInformationsForPokemon(id: number): Promise<any> {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}/`);
   const data = await res.json();
 
   return data;
-}
-
-export async function getAbilitiesForPokemon(data: any) {
-  const abilities = await Promise.all(
-    data.map(async (ability: any) => {
-      const res = await fetch(ability.ability.url);
-      const data = await res.json();
-      const getFrenchAbility = await getFrenchName(data);
-      ability.ability.name = getFrenchAbility.name;
-      return ability;
-    })
-  );
-
-  return abilities;
-}
-
-export async function getEggsForPokemon(data: any) {
-  const eggs = await Promise.all(
-    data.map(async (egg: any) => {
-      const res = await fetch(egg.url);
-      const data = await res.json();
-      const getFrenchEgg = await getFrenchName(data);
-      egg.name = getFrenchEgg.name;
-      return egg;
-    })
-  );
-  return eggs;
 }
 
 export async function getStatsForPokemon({
@@ -70,8 +52,8 @@ export async function getStatsForPokemon({
   pokemonStats,
 }: {
   pokemonId: number;
-  pokemonStats: any;
-}) {
+  pokemonStats: PokemonStats;
+}): Promise<StatsArray[]> {
   const statMap = {
     hp: "Hp",
     atk: "Attaque",
@@ -80,12 +62,12 @@ export async function getStatsForPokemon({
     spe_def: "Défense Spéciale",
     vit: "vitesse",
   };
-  let statsArray = [] as any[];
+  let statsArray: StatsArray[] = [];
 
   for (let key in pokemonStats) {
     if (pokemonStats.hasOwnProperty(key)) {
       statsArray.push({
-        base_stat: pokemonStats[key],
+        base_stat: pokemonStats[key as keyof PokemonStats],
         name: statMap[key as keyof typeof statMap],
       });
     }
@@ -115,18 +97,13 @@ export async function getStatsForPokemon({
   return statsArray;
 }
 
-export async function getEvolutionOfPokemon(url: string) {
+export async function getFrenchFirstType(
+  url: string
+): Promise<DataLanguage | null> {
   const res = await fetch(url);
   const data = await res.json();
 
-  return data;
-}
-
-export async function getFrenchFirstType(url: string) {
-  const res = await fetch(url);
-  const data = await res.json();
-
-  const nameFrench = await getFrenchName(data);
+  const nameFrench = await getFrenchName(data.names);
 
   return nameFrench;
 }

@@ -1,7 +1,19 @@
 import React from "react";
 import { colorTypes } from "../colors";
 
-export const CardType = async ({ firstType, secondType, name, id }: any) => {
+interface CardTypeProps {
+  firstType: string;
+  secondType: string;
+  name: string;
+  id: number;
+}
+
+export const CardType = async ({
+  firstType,
+  secondType,
+  name,
+  id,
+}: CardTypeProps) => {
   return (
     <div className="flex gap-1 h-8">
       <div

@@ -11,15 +11,16 @@ import { Card, CardContent } from "../ui/card";
 import Image from "next/image";
 import { backgroundColorTypes } from "@/utils/colorsBackground";
 import { colorTypes } from "../colors";
+import { Move } from "@/utils/type";
 
-export const PokemonCt = ({ moves, type }: { moves: any; type: string }) => {
+export const PokemonCt = ({ moves, type }: { moves: Move[]; type: string }) => {
   const movesLearnedWithMachines = moves
-    .filter((move: any) => {
+    .filter((move) => {
       return move.data.machines.length > 0;
     })
-    .sort((a: any, b: any) => {
-      if (a.data.machines.name < b.data.machines.name) return -1;
-      if (a.data.machines.name > b.data.machines.name) return 1;
+    .sort((a, b) => {
+      if (a.data.machines[0].name < b.data.machines[0].name) return -1;
+      if (a.data.machines[0].name > b.data.machines[0].name) return 1;
       return 0;
     });
 
@@ -50,10 +51,10 @@ export const PokemonCt = ({ moves, type }: { moves: any; type: string }) => {
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
-            {movesLearnedWithMachines.map((move: any) => (
+            {movesLearnedWithMachines.map((move) => (
               <TableRow key={move.data.id}>
                 <TableCell className="text-center">
-                  {move.data.machines.name}
+                  {move.data.machines[0].name}
                 </TableCell>
                 <TableCell className="text-center">{move.move.name}</TableCell>
                 <TableCell className="w-16 h-6 p-0.5">

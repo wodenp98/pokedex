@@ -16,7 +16,7 @@ export default async function Home({ params: { id }, searchParams }: Params) {
   const query = searchParams?.query || "";
   const pokemons = await getPokemonsByGeneration(id);
 
-  const filteredPokemons = pokemons.filter((pokemon: any) =>
+  const filteredPokemons = pokemons.filter((pokemon) =>
     pokemon.name.fr.toLowerCase().includes(query.toLowerCase())
   );
 

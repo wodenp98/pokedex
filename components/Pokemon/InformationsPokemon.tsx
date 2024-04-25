@@ -2,9 +2,7 @@
 import {
   getPokemonData,
   getInformationsForPokemon,
-  getFrenchFirstType,
-  getAbilitiesForPokemon,
-  getEggsForPokemon,
+  getPokemonMoves,
 } from "@/utils/apiCall";
 import { backgroundColorTypes } from "@/utils/colorsBackground";
 import React from "react";
@@ -12,7 +10,7 @@ import { CardType } from "../TypePokemon/CardType";
 import { TypePokemon } from "../TypePokemon/TypePokemon";
 import { colorTypes } from "../colors";
 import { Icons } from "../icons";
-import { getFrenchName, getPokedexInFrench } from "@/utils/helpers";
+import { getPokedexInFrench } from "@/utils/helpers";
 import Image from "next/image";
 
 export const InformationsPokemon = async ({ id }: { id: number }) => {
@@ -21,11 +19,9 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
     pokemonData.pokedex_id
   );
 
+  const baseExp = await getPokemonMoves(pokemonData.pokedex_id);
+
   const pokedex = await getPokedexInFrench(informationsPokemon.pokedex_numbers);
-
-  // console.log("pokedex", pokedex);
-
-  // french name for pokedex name?
 
   return (
     <div
@@ -57,7 +53,7 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
         <div className="w-full flex items-center justify-center bg-white rounded">
           <Image
             src={pokemonData.sprites.regular}
-            alt={pokemonData.name}
+            alt={pokemonData.name.fr}
             width={280}
             height={250}
             quality={100}
@@ -91,7 +87,7 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
 
         <div className="bg-white w-full p-4 rounded">
           <div className="grid grid-cols-3 gap-2 text-center">
-            {pokedex.map((pokedexNumber: any) => (
+            {pokedex.map((pokedexNumber) => (
               <div key={pokedexNumber.name}>
                 <div>
                   <h3 className="font-bold capitalize text-sm">
@@ -115,7 +111,7 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
           Types
         </p>
         <div className="bg-white rounded w-3/5 flex items-center justify-center p-2">
-          {pokemonData.types.map((type: any) => (
+          {pokemonData.types.map((type) => (
             <div key={type.name}>
               <TypePokemon name={type.name} />
             </div>
@@ -172,7 +168,7 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
         </p>
 
         <div className="capitalize bg-white rounded l w-3/5 py-1 pl-2 flex flex-col justify-center">
-          {pokemonData.talents.map((talent: any) => (
+          {pokemonData.talents.map((talent) => (
             <div key={talent.name}>
               <p>{talent.name}</p>
             </div>
@@ -193,7 +189,7 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
           {!pokemonData.egg_groups ? (
             <p>Inconnu</p>
           ) : (
-            pokemonData.egg_groups.map((egg: any) => (
+            pokemonData.egg_groups.map((egg) => (
               <div key={egg}>
                 <p>{egg}</p>
               </div>
@@ -226,7 +222,7 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
           Base Exp.
         </p>
         <p className="capitalize  bg-white rounded w-3/5 p-2">
-          {pokemonData.base_experience} exp.
+          {baseExp.base_experience} exp.
         </p>
       </div>
       <div className="flex gap-0.5 w-full items-center p-1">
@@ -283,11 +279,12 @@ export const InformationsPokemon = async ({ id }: { id: number }) => {
         </p>
         <div className="capitalize  bg-white rounded w-3/5 py-1 pl-2 flex flex-col">
           <p className="text-pink-500 flex items-center">
-            {pokemonData.sexe.female}%{" "}
+            {pokemonData.sexe === null ? 0 : pokemonData.sexe.female}%
             <Icons.femaleGender className="h-4 w-4" />
           </p>
           <p className="text-blue-500 flex items-center">
-            {pokemonData.sexe.male}% <Icons.maleGender className="h-4 w-4" />
+            {pokemonData.sexe === null ? 0 : pokemonData.sexe.male}%{" "}
+            <Icons.maleGender className="h-4 w-4" />
           </p>
         </div>
       </div>

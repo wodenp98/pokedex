@@ -11,6 +11,7 @@ import {
 import Image from "next/image";
 import { Card, CardContent } from "../ui/card";
 import { backgroundColorTypes } from "@/utils/colorsBackground";
+import { Move } from "@/utils/type";
 import { getVersion } from "@/utils/helpers";
 
 export const PokemonCs = ({
@@ -18,17 +19,17 @@ export const PokemonCs = ({
   generation,
   type,
 }: {
-  moves: any;
+  moves: Move[];
   generation: string;
   type: string;
 }) => {
   const movesLearnedByLevel = moves
-    .filter((move: any) => {
+    .filter((move) => {
       return move.version_group_details.some(
-        (detail: any) => detail.level_learned_at !== 0
+        (detail) => detail.level_learned_at !== 0
       );
     })
-    .sort((a: any, b: any) => {
+    .sort((a, b) => {
       return (
         a.version_group_details[a.version_group_details.length - 1]
           .level_learned_at -
@@ -39,7 +40,7 @@ export const PokemonCs = ({
 
   const versions = getVersion(generation);
 
-  const firstLetters = versions.map((version: any) => {
+  const firstLetters = versions.map((version) => {
     const splitVersion = version.split("-");
     const firstLetters = splitVersion.map((element: string) =>
       element.charAt(0)
@@ -80,7 +81,7 @@ export const PokemonCs = ({
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white">
-            {movesLearnedByLevel.map((move: any) => {
+            {movesLearnedByLevel.map((move) => {
               return (
                 <TableRow key={move.move.name}>
                   <TableCell>{move.move.name}</TableCell>
@@ -110,11 +111,11 @@ export const PokemonCs = ({
                   <TableCell className="text-center">{move.data.pp}</TableCell>
                   {versions.map((version) => {
                     const versionDetails = move.version_group_details.filter(
-                      (details: any) => details.version_group.name === version
+                      (details) => details.version_group.name === version
                     );
 
                     const levels = versionDetails
-                      .map((detail: any) => detail.level_learned_at)
+                      .map((detail) => detail.level_learned_at)
                       .join(" - ");
                     return (
                       <TableCell key={version} className="text-center">

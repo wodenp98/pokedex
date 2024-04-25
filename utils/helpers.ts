@@ -1,15 +1,19 @@
 import { getFrenchFirstType } from "./apiCall";
+import {
+  DataLanguage,
+  Machine,
+  Move,
+  PokedexNameType,
+  PokedexType,
+  VersionGroupDetail,
+} from "./type";
 
-export const getFrenchName = async (data: any) => {
-  const name = data.names.find((name: any) => name.language.name === "fr");
+export const getFrenchName = async (
+  data: DataLanguage[]
+): Promise<DataLanguage | null> => {
+  const name = data.find((name) => name.language.name === "fr");
 
-  return name;
-};
-
-export const getEnglishName = async (data: any) => {
-  const name = data.names.find((name: any) => name.language.name === "en");
-
-  return name;
+  return name ?? null;
 };
 
 const versionToGeneration = {
@@ -34,28 +38,7 @@ const versionToGeneration = {
   "scarlet-violet": "9",
 };
 
-interface VersionGroupDetail {
-  version_group: {
-    name: string;
-    url: string;
-  };
-  move_learn_method: {
-    name: string;
-    url: string;
-  };
-  level_learned_at: number;
-}
-
-interface Move {
-  move: {
-    name: string;
-    url: string;
-  };
-  version_group_details: VersionGroupDetail[];
-  data: any;
-}
-
-export function getVersion(generation: string) {
+export function getVersion(generation: string): string[] {
   const versionsCorrespondantes = [] as string[];
   Object.keys(versionToGeneration).forEach((version) => {
     if (
@@ -78,48 +61,47 @@ export async function getMovesByGeneration(moves: Move[], generation: string) {
     });
     return { ...move, version_group_details: selectedDetails };
   });
+
   const filteredMoves = selectedMoves.filter(
-    (move) => move.version_group_details.length > 0
+    (move: Move) => move.version_group_details.length > 0
   );
 
   for (let move of filteredMoves) {
     const moveRes = await fetch(move.move.url);
     const data = await moveRes.json();
-    const nameFrench = await getFrenchName(data);
+    const nameFrench = await getFrenchName(data.names);
 
-    const filteredMachines = data.machines.filter((machine: any) => {
+    const filteredMachines = data.machines.filter((machine: Machine) => {
       return versionsCorrespondantes.includes(machine.version_group.name);
     });
 
-    const moveLevelLearnedAt: VersionGroupDetail[] =
-      move.version_group_details.filter(
-        (detail) => detail.level_learned_at > 0
-      );
-
-    const nameInEnglish = await getEnglishName(data);
+    const moveLevelLearnedAt = move.version_group_details.filter(
+      (detail: VersionGroupDetail) => detail.level_learned_at > 0
+    );
 
     const typeMoveInFrench = await getFrenchFirstType(data.type.url);
 
     move.version_group_details = moveLevelLearnedAt;
 
-    move.move.name =
-      nameFrench === undefined ? nameInEnglish.name : nameFrench.name;
+    move.move.name = nameFrench === undefined ? data.name : nameFrench?.name;
     move.data = {
       ...data,
-      type: typeMoveInFrench.name,
+      type: typeMoveInFrench?.name,
       machines: filteredMachines,
     };
 
     if (move.data.machines.length > 0) {
       await Promise.all(
-        move.data.machines.map(async (machine: any) => {
+        move.data.machines.map(async (machine) => {
           const machineRes = await fetch(machine.machine.url);
           const machineData = await machineRes.json();
           const item = await fetch(machineData.item.url);
           const itemData = await item.json();
-          const itemFrenchName = await getFrenchName(itemData);
+          const itemFrenchName = await getFrenchName(itemData.names);
 
-          move.data.machines.name = itemFrenchName.name;
+          if (machine) {
+            machine.name = itemFrenchName?.name || machine.name;
+          }
         })
       );
     }
@@ -140,13 +122,15 @@ export const generationNumbers: { [key: string]: string } = {
   "generation-ix": "9",
 };
 
-export async function getPokedexInFrench(pokedexs: any) {
-  const pokedexName = await Promise.all(
-    pokedexs.map(async (pokedex: any) => {
+export async function getPokedexInFrench(
+  pokedexs: PokedexType[]
+): Promise<PokedexNameType[]> {
+  const pokedexName: PokedexNameType[] = await Promise.all(
+    pokedexs.map(async (pokedex) => {
       const res = await fetch(pokedex.pokedex.url);
       const data = await res.json();
 
-      const name = await getFrenchName(data);
+      const name = await getFrenchName(data.names);
 
       const globalName = !name ? pokedex.pokedex : name;
 

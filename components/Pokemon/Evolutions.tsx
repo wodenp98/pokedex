@@ -1,10 +1,16 @@
-import { getPokemonData } from "@/utils/apiCall";
+/* eslint-disable react/no-unescaped-entities */
+import { EvolutionsProps, EvolutionsType } from "@/utils/type";
 import Link from "next/link";
 import Image from "next/image";
+import { getPokemonData } from "@/utils/apiCall";
 
-const EvolutionDetails = async ({ evolutions }: any) => {
+const EvolutionDetails = async ({
+  evolutions,
+}: {
+  evolutions: EvolutionsProps[];
+}) => {
   const pokemons = await Promise.all(
-    evolutions.map(async (evolution: any) => {
+    evolutions.map(async (evolution) => {
       const data = await getPokemonData(evolution.pokedex_id);
 
       return {
@@ -18,7 +24,7 @@ const EvolutionDetails = async ({ evolutions }: any) => {
     <>
       {pokemons.length > 5 ? (
         <div className="flex flex-col w-[350px] items-stretch gap-1">
-          {pokemons.map((pokemon: any) => (
+          {pokemons.map((pokemon) => (
             <Link href={`/pokemon/${pokemon.pokedex_id}`} key={pokemon.name.fr}>
               <div className="w-full h-full rounded-b-lg overflow-hidden bg-white flex items-center justify-center flex-col">
                 <Image
@@ -39,7 +45,7 @@ const EvolutionDetails = async ({ evolutions }: any) => {
         </div>
       ) : (
         <div className="flex items-stretch gap-1">
-          {pokemons.map((pokemon: any) => (
+          {pokemons.map((pokemon) => (
             <Link href={`/pokemon/${pokemon.pokedex_id}`} key={pokemon.name.fr}>
               <div className="w-full h-full rounded-b-lg overflow-hidden bg-white flex items-center justify-center flex-col">
                 <Image
@@ -63,18 +69,27 @@ const EvolutionDetails = async ({ evolutions }: any) => {
   );
 };
 
-export const EvolutionComponent = ({ evolutionData }: any) => {
+export const EvolutionComponent = ({
+  evolutionData,
+}: {
+  evolutionData: EvolutionsType;
+}) => {
   return (
     <div className="flex gap-1">
-      {evolutionData.pre && evolutionData.pre.length > 0 && (
+      {evolutionData?.pre && evolutionData?.pre.length > 0 && (
         <div>
           <EvolutionDetails evolutions={evolutionData.pre} />
         </div>
       )}
 
-      {evolutionData.next && evolutionData.next.length > 0 && (
+      {evolutionData?.next && evolutionData?.next.length > 0 && (
         <div>
           <EvolutionDetails evolutions={evolutionData.next} />
+        </div>
+      )}
+      {evolutionData === null && (
+        <div className="w-full h-full rounded-b-lg overflow-hidden bg-white flex items-center justify-center flex-col">
+          <h1 className="text-lg font-bold text-center p-4">Pas d'évolution</h1>
         </div>
       )}
     </div>

@@ -1,15 +1,5 @@
-// import { colorTypes } from "@/utils/helpers";
-import { getFrenchName } from "@/utils/helpers";
 import Image from "next/image";
 import React from "react";
-
-async function getFrenchType(url: string) {
-  const res = await fetch(url);
-  const data = await res.json();
-
-  const nameFrench = await getFrenchName(data);
-  return nameFrench;
-}
 
 export const TypePokemon = async ({ name }: { name: string }) => {
   return (

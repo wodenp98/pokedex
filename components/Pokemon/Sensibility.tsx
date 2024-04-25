@@ -5,7 +5,7 @@ import {
 import React from "react";
 import { colorTypes } from "../colors";
 
-import { getPokemonData, getFrenchFirstType } from "@/utils/apiCall";
+import { getPokemonData } from "@/utils/apiCall";
 import Image from "next/image";
 
 export const Sensibility = async ({ id }: { id: number }) => {
@@ -28,7 +28,7 @@ export const Sensibility = async ({ id }: { id: number }) => {
         Sensibilités
       </p>
       <div className="grid grid-cols-6 rounded justify-center gap-0.5">
-        {pokemonData.resistances.map((resistance: any) => (
+        {pokemonData.resistances.map((resistance) => (
           <div
             key={resistance.name}
             className="flex flex-col justify-center items-center bg-white rounded"

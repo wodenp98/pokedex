@@ -3,11 +3,16 @@ import Image from "next/image";
 import React from "react";
 import { TypePokemon } from "../TypePokemon/TypePokemon";
 import { Card, CardContent } from "../ui/card";
+import { PokemonType } from "@/utils/type";
 
-export const PokemonsDashboard = ({ pokemons }: { pokemons: any }) => {
+export const PokemonsDashboard = ({
+  pokemons,
+}: {
+  pokemons: PokemonType[];
+}) => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {pokemons.map((pokemon: any) => (
+      {pokemons.map((pokemon) => (
         <Card key={pokemon.name.fr} className="w-80 flex justify-center">
           <CardContent>
             <Link href={`/pokemon/${pokemon.pokedex_id}`}>
@@ -23,7 +28,7 @@ export const PokemonsDashboard = ({ pokemons }: { pokemons: any }) => {
                 {pokemon.name.fr}
               </h1>
               <div className="flex justify-center gap-2">
-                {pokemon.types?.map((type: any) => (
+                {pokemon.types?.map((type) => (
                   <div key={type.name}>
                     <TypePokemon name={type.name} />
                   </div>

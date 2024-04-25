@@ -14,6 +14,7 @@ import { Sensibility } from "@/components/Pokemon/Sensibility";
 import { Statistiques } from "@/components/Pokemon/Statistiques";
 import { backgroundColorTypes, colorTypes } from "@/utils/colorsBackground";
 import { EvolutionComponent } from "@/components/Pokemon/Evolutions";
+import { Move, Moves, VersionGroupDetail } from "@/utils/type";
 
 interface Params {
   params: {
@@ -27,12 +28,12 @@ export default async function Page({ params: { id }, searchParams }: Params) {
   const pokemonMoves = await getPokemonMoves(id);
 
   const moves = await getMovesByGeneration(
-    pokemonMoves.moves,
+    (pokemonMoves as Moves).moves,
     searchParams?.generation || String(pokemonData.generation)
   );
 
   const pokemonStats = await getStatsForPokemon({
-    pokemonId: pokemonData.id,
+    pokemonId: pokemonData.pokedex_id,
     pokemonStats: pokemonData.stats,
   });
 
@@ -78,10 +79,7 @@ export default async function Page({ params: { id }, searchParams }: Params) {
           >
             Evolutions
           </p>
-          <EvolutionComponent
-            evolutionData={pokemonData.evolution}
-            initialPokemon={pokemonData}
-          />
+          <EvolutionComponent evolutionData={pokemonData.evolution} />
         </div>
       </div>
     </div>
